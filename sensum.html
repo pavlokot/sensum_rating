@@ -144,6 +144,7 @@
     .cal-day.is-today { background: var(--yellow) !important; color: #000 !important; font-weight: 700; }
     .cal-day.is-today .bd-dot { background: #000; }
     .bd-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--yellow); margin-top: 3px; }
+    .cal-day.is-game:not(.is-today) { background: #1A1200 !important; color: var(--text) !important; cursor: pointer; }
     .bd-multi { font-size: 8px; color: var(--yellow); font-weight: 700; margin-top: 1px; }
 
     /* Birthday list */
@@ -231,6 +232,27 @@
     .tt-name { font-size: 13px; color: var(--text); text-transform: uppercase; }
     .tt-date { font-size: 11px; color: var(--yellow); margin-top: 2px; }
 
+    /* MATCH CARDS */
+    .match-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--border);
+      padding: 20px 24px;
+      transition: all 0.15s;
+    }
+    .match-card:hover { background: #1A1A1A; }
+    .match-card.upcoming { border-left-color: var(--yellow); background: #141200; }
+    .match-date { font-size: 11px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+    .match-vs { font-family: 'Bravo', sans-serif; font-size: 24px; letter-spacing: 2px; color: var(--text); line-height: 1; margin-bottom: 10px; }
+    .match-vs span { color: var(--yellow); }
+    .match-status { display: inline-block; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; padding: 3px 8px; }
+    .upcoming-tag { background: var(--yellow); color: #000; }
+    .future-tag { background: var(--border); color: var(--muted); }
+    .won-tag { background: #1A3A1A; color: #4CAF50; border: 1px solid #4CAF50; }
+    .lost-tag { background: #3A1A1A; color: #F44336; border: 1px solid #F44336; }
+    .match-card.past { opacity: 0.45; }
+    .past-tag { background: var(--border); color: var(--muted); }
+
     @media (max-width: 900px) {
       .team-grid { grid-template-columns: 1fr; }
       header { padding: 0 20px; }
@@ -256,7 +278,7 @@
   </div>
   <nav>
     <a onclick="showTab('rating')" id="tab-rating" class="active">Рейтинг</a>
-    <a onclick="showTab('training')" id="tab-training">Тренування</a>
+    <a onclick="showTab('training')" id="tab-training">Ігри</a>
     <a onclick="showTab('team')" id="tab-team">Команда</a>
   </nav>
 </header>
@@ -300,12 +322,68 @@
   </div>
 </div>
 
-<!-- TAB: ТРЕНУВАННЯ -->
+<!-- TAB: ІГРИ -->
 <div class="tab" id="tab-content-training">
   <div class="page-narrow">
-    <div class="section-label">Матчі</div>
-    <div class="section-title">ТРЕНУВАННЯ</div>
-    <div class="empty-msg">Скоро тут з'явиться історія тренувань</div>
+    <div class="section-label">Маракана Ліга 2025/26 · Вища ліга</div>
+    <div class="section-title">ІГРИ</div>
+
+    <div style="display:grid;grid-template-columns:1fr;gap:2px;margin-bottom:40px" id="matchGrid"></div>
+    <script>
+    (function() {
+      const matches = [
+        {day:11, month:4, time:'15:30', opponent:'V 12'},
+        {day:18, month:4, time:'11:00', opponent:'CLUB 8'},
+        {day:25, month:4, time:'14:30', opponent:'ПРЕЗИДЕНТИ'},
+        {day:2,  month:5, time:'11:00', opponent:'STORGOM.UA'},
+        {day:9,  month:5, time:'15:30', opponent:'УС'},
+        {day:16, month:5, time:'12:00', opponent:'V 12'},
+        {day:30, month:5, time:'14:30', opponent:'CLUB 8'},
+      ];
+
+      const monthNames = ['','Січня','Лютого','Березня','Квітня','Травня','Червня','Липня','Серпня','Вересня','Жовтня','Листопада','Грудня'];
+      const now = new Date();
+
+      // Знаходимо наступну гру
+      let nextIdx = -1;
+      for (let i = 0; i < matches.length; i++) {
+        const m = matches[i];
+        const [h, min] = m.time.split(':').map(Number);
+        const matchDate = new Date(2026, m.month-1, m.day, h, min);
+        if (matchDate > now) { nextIdx = i; break; }
+      }
+
+      const grid = document.getElementById('matchGrid');
+      matches.forEach((m, i) => {
+        const [h, min] = m.time.split(':').map(Number);
+        const matchDate = new Date(2026, m.month-1, m.day, h, min);
+        const isPast = matchDate < now;
+        const isNext = i === nextIdx;
+
+        const card = document.createElement('div');
+        card.className = 'match-card' + (isNext ? ' upcoming' : isPast ? ' past' : ' future');
+
+        let badge = '';
+        if (isNext) badge = '<div class="match-status upcoming-tag">Наступна гра</div>';
+        else if (isPast) badge = '<div class="match-status past-tag">Зіграно</div>';
+        else badge = '<div class="match-status future-tag">Майбутній</div>';
+
+        // Days until
+        let daysNote = '';
+        if (isNext) {
+          const diff = Math.ceil((matchDate - now) / 86400000);
+          daysNote = diff === 0 ? ' · Сьогодні!' : ` · за ${diff} дн.`;
+        }
+
+        card.innerHTML = `
+          <div class="match-date">${m.day} ${monthNames[m.month]} · ${m.time}${daysNote}</div>
+          <div class="match-vs">vs <span>${m.opponent}</span></div>
+          ${badge}
+        `;
+        grid.appendChild(card);
+      });
+    })();
+    </script>
   </div>
 </div>
 
@@ -671,6 +749,17 @@
     return p.length>=2 ? p[0][0]+p[1][0] : p[0][0];
   }
 
+  // GAME DATES for calendar highlighting
+  const gameDates = [
+    {day: 11, month: 4, opponent: 'V 12', time: '15:30'},
+    {day: 18, month: 4, opponent: 'CLUB 8', time: '11:00'},
+    {day: 25, month: 4, opponent: 'ПРЕЗИДЕНТИ', time: '14:30'},
+    {day: 2, month: 5, opponent: 'STORGOM.UA', time: '11:00'},
+    {day: 9, month: 5, opponent: 'УС', time: '15:30'},
+    {day: 16, month: 5, opponent: 'V 12', time: '12:00'},
+    {day: 30, month: 5, opponent: 'CLUB 8', time: '14:30'},
+  ];
+
   function render() {
     const mp = players.filter(p=>p.month===currentMonth).sort((a,b)=>a.day-b.day);
     document.getElementById('monthName').textContent = monthNamesUC[currentMonth-1];
@@ -697,7 +786,19 @@
     for(let d=1;d<=getDaysInMonth(currentMonth);d++){
       const el=document.createElement('div');
       const hasBd=bdMap[d]; const tod=isToday(d,currentMonth);
-      el.className='cal-day'+(hasBd?' has-bd':'')+(tod?' is-today':'');
+      const isGame = gameDates.some(g => g.day===d && g.month===currentMonth);
+      const gameInfo = gameDates.find(g => g.day===d && g.month===currentMonth);
+      el.className='cal-day'+(hasBd?' has-bd':'')+(tod?' is-today':'')+(isGame?' is-game':'');
+      if(isGame && !hasBd) el.style.cssText='background:#1A1200;color:#fff;cursor:pointer;border-radius:2px;';
+      if(isGame) {
+        el.addEventListener('mouseenter', e => {
+          document.getElementById('tt-name').textContent = 'vs ' + gameInfo.opponent;
+          document.getElementById('tt-date').textContent = gameInfo.time + ' · Маракана';
+          document.getElementById('tooltip').classList.add('vis'); moveTT(e);
+        });
+        el.addEventListener('mouseleave', hideTT);
+        el.addEventListener('mousemove', moveTT);
+      }
       el.innerHTML=`<span>${d}</span>`;
       if(hasBd){
         el.innerHTML+=`<div class="bd-dot"></div>`;
