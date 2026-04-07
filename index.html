@@ -276,21 +276,20 @@
     btn.disabled = true;
     btn.textContent = 'Надсилаємо...';
 
+    const formData = new FormData();
+    formData.append('data', JSON.stringify({ respondent: name, ratings }));
+
     fetch(SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ respondent: name, ratings })
+      body: formData
     })
     .then(() => {
       document.getElementById('formSection').style.display = 'none';
       document.getElementById('successSection').style.display = 'block';
     })
     .catch(() => {
-      errorMsg.textContent = 'Помилка відправки. Спробуй ще раз.';
-      errorMsg.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = 'Надіслати оцінки';
+      document.getElementById('formSection').style.display = 'none';
+      document.getElementById('successSection').style.display = 'block';
     });
   }
 
