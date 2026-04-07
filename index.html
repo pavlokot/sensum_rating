@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Рейтинг гравців</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      padding: 32px 28px;
+    }
+    h1 { font-size: 22px; font-weight: 700; color: #1a202c; margin-bottom: 6px; }
+    .subtitle { font-size: 14px; color: #718096; margin-bottom: 28px; }
+
+    .field-label { font-size: 13px; font-weight: 600; color: #4a5568; margin-bottom: 6px; }
+    .name-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+      transition: border 0.2s;
+      margin-bottom: 24px;
+    }
+    .name-input:focus { border-color: #667eea; }
+
+    .progress { font-size: 13px; color: #718096; margin-bottom: 16px; }
+    .progress span { font-weight: 700; color: #667eea; }
+
+    .players-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+
+    .player-row {
+      background: #f7fafc;
+      border-radius: 12px;
+      padding: 12px 16px;
+      border: 1.5px solid #e2e8f0;
+      transition: border 0.2s, background 0.2s;
+    }
+    .player-row.rated { border-color: #48bb78; background: #f0fff4; }
+
+    .player-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .player-num { font-size: 12px; color: #a0aec0; min-width: 24px; }
+    .player-name { font-size: 15px; font-weight: 600; color: #2d3748; }
+    .player-score {
+      margin-left: auto;
+      font-size: 13px;
+      font-weight: 700;
+      color: #667eea;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .dots input[type="radio"] { display: none; }
+    .dots label {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #718096;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .dots label:hover { background: #c3dafe; color: #3c52b2; transform: scale(1.12); }
+
+    input[type="radio"].dot-1:checked + label,
+    input[type="radio"].dot-2:checked + label { background: #fc8181; color: #fff; transform: scale(1.15); box-shadow: 0 2px 8px rgba(252,129,129,0.45); }
+
+    input[type="radio"].dot-3:checked + label,
+    input[type="radio"].dot-4:checked + label { background: #f6ad55; color: #fff; transform: scale(1.15); box-shadow: 0 2px 8px rgba(246,173,85,0.45); }
+
+    input[type="radio"].dot-5:checked + label,
+    input[type="radio"].dot-6:checked + label { background: #ecc94b; color: #744210; transform: scale(1.15); box-shadow: 0 2px 8px rgba(236,201,75,0.45); }
+
+    input[type="radio"].dot-7:checked + label,
+    input[type="radio"].dot-8:checked + label { background: #68d391; color: #fff; transform: scale(1.15); box-shadow: 0 2px 8px rgba(104,211,145,0.45); }
+
+    input[type="radio"].dot-9:checked + label,
+    input[type="radio"].dot-10:checked + label { background: #38a169; color: #fff; transform: scale(1.15); box-shadow: 0 2px 8px rgba(56,161,105,0.45); }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .submit-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .error-msg {
+      display: none;
+      background: #fff5f5;
+      border: 1.5px solid #fc8181;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #c53030;
+      font-size: 14px;
+      margin-top: 12px;
+    }
+
+    .success {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .success .icon { font-size: 56px; margin-bottom: 16px; }
+    .success h2 { font-size: 22px; color: #276749; margin-bottom: 8px; }
+    .success p { color: #718096; font-size: 15px; }
+
+    @media (max-width: 480px) {
+      .dots label { width: 27px; height: 27px; font-size: 11px; }
+      .dots { gap: 4px; }
+      .container { padding: 20px 14px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div id="formSection">
+    <h1>⚽ Рейтинг гравців</h1>
+    <p class="subtitle">Постав оцінку кожному гравцю від 1 до 10</p>
+
+    <div class="field-label">Твоє ім'я *</div>
+    <input type="text" class="name-input" id="respondentName" placeholder="Введи своє ім'я...">
+
+    <div class="progress">Оцінено: <span id="ratedCount">0</span> / <span id="totalCount"></span></div>
+
+    <div class="players-list" id="playersList"></div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitForm()">Надіслати оцінки</button>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <div class="success" id="successSection">
+    <div class="icon">✅</div>
+    <h2>Дякуємо!</h2>
+    <p>Твої оцінки збережено.</p>
+  </div>
+</div>
+
+<script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyMp50nPoW6bIH2GbIF6Hrvz_E7bQFtiPH8mWMvRfZnmYoIeanWBqZmpdv9kJUHaGLQ/exec';
+
+  const players = [
+    "Бірюк Ілля",
+    "Бойко Микола",
+    "Бондарчук Дмитро",
+    "Бондарчук Олег",
+    "Бучаков Володимир",
+    "Бучаков Юрій",
+    "Влодко Олег",
+    "Гіленко Максим",
+    "Гурін Валерій",
+    "Дмитро Стасюк",
+    "Жадобін Віталій",
+    "Квітко Павло",
+    "Коваль Тарас",
+    "Коробка Максим",
+    "Кот Павло",
+    "Місюра Віталій",
+    "Міхалюк Сергій",
+    "Моїсеєв Максим",
+    "Навроцький Дмитро",
+    "Оліщук Віталій",
+    "Пилипчук Юрій",
+    "Пльотка Павло",
+    "Потєха Олександр",
+    "Ревізюк Юрій",
+    "Самощенко Ярослав",
+    "Сергієнко Артем",
+    "Сіленко Олександр",
+    "Смаковенко Павло",
+    "Шабельніков Андрій",
+    "Шило Валерій"
+  ];
+
+  document.getElementById('totalCount').textContent = players.length;
+
+  function buildList() {
+    const list = document.getElementById('playersList');
+    players.forEach((name, i) => {
+      const row = document.createElement('div');
+      row.className = 'player-row';
+      row.id = `row_${i}`;
+
+      let dotsHTML = '';
+      for (let n = 1; n <= 10; n++) {
+        dotsHTML += `<input type="radio" class="dot-${n}" name="player_${i}" id="p${i}_${n}" value="${n}" onchange="onRate(${i})"><label for="p${i}_${n}">${n}</label>`;
+      }
+
+      row.innerHTML = `
+        <div class="player-header">
+          <span class="player-num">${i+1}.</span>
+          <span class="player-name">${name}</span>
+          <span class="player-score" id="score_${i}"></span>
+        </div>
+        <div class="dots">${dotsHTML}</div>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  function onRate(i) {
+    const val = document.querySelector(`input[name="player_${i}"]:checked`)?.value;
+    document.getElementById(`score_${i}`).textContent = val ? `${val}/10` : '';
+    document.getElementById(`row_${i}`).classList.toggle('rated', !!val);
+    updateProgress();
+  }
+
+  function updateProgress() {
+    let count = 0;
+    players.forEach((_, i) => {
+      if (document.querySelector(`input[name="player_${i}"]:checked`)) count++;
+    });
+    document.getElementById('ratedCount').textContent = count;
+  }
+
+  function submitForm() {
+    const name = document.getElementById('respondentName').value.trim();
+    const errorMsg = document.getElementById('errorMsg');
+    errorMsg.style.display = 'none';
+
+    if (!name) {
+      errorMsg.textContent = "Введи своє ім'я перед відправкою.";
+      errorMsg.style.display = 'block';
+      return;
+    }
+
+    const ratings = [];
+    const missing = [];
+    players.forEach((player, i) => {
+      const val = document.querySelector(`input[name="player_${i}"]:checked`)?.value;
+      if (!val) missing.push(player);
+      ratings.push({ player, rating: val || '' });
+    });
+
+    if (missing.length > 0) {
+      errorMsg.textContent = `Не оцінено: ${missing.join(', ')}`;
+      errorMsg.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Надсилаємо...';
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ respondent: name, ratings })
+    })
+    .then(() => {
+      document.getElementById('formSection').style.display = 'none';
+      document.getElementById('successSection').style.display = 'block';
+    })
+    .catch(() => {
+      errorMsg.textContent = 'Помилка відправки. Спробуй ще раз.';
+      errorMsg.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Надіслати оцінки';
+    });
+  }
+
+  buildList();
+</script>
+</body>
+</html>
