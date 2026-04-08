@@ -20,10 +20,14 @@
     nav a.active { color:var(--yellow); border-bottom-color:var(--yellow); }
     nav a:hover { color:var(--text); }
     @media (max-width:600px) {
-      header { flex-direction:column; height:auto; padding:16px 20px 0; gap:0; align-items:flex-start; }
-      nav { margin-left:0; width:100%; border-top:1px solid var(--border); margin-top:12px; }
-      nav a { height:44px; padding:0 16px; font-size:10px; letter-spacing:2px; border-bottom:2px solid transparent; margin-bottom:0; }
-      nav a.active { border-bottom-color:var(--yellow); }
+      header { flex-direction:column; height:auto; padding:16px 20px 0; gap:0; align-items:center; }
+      header > div:first-child { width:100%; display:flex; justify-content:center; }
+      nav { margin-left:0; width:100%; margin-top:12px; display:flex; justify-content:center; border-bottom:none; }
+      nav a { height:40px; padding:0 14px; font-size:10px; letter-spacing:1px; border-bottom:none; margin-bottom:0; border-top:2px solid transparent; }
+      nav a.active { color:var(--yellow); border-top:2px solid var(--yellow); }
+      td.bar-cell { display:none !important; }
+      td.avg-cell { text-align:right; }
+      td.delta-cell { width:56px; }
     }
 
     .tab { display:none; }
@@ -156,7 +160,6 @@
     @media (max-width:900px) {
       .team-grid { grid-template-columns:1fr; }
       .page,.page-narrow { padding:24px 20px; }
-      td.bar-cell { display:none; }
       .losers-podium { flex-direction:column; }
     }
   </style>
