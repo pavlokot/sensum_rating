@@ -19,6 +19,12 @@
     nav a { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); text-decoration:none; padding:0 20px; height:72px; display:flex; align-items:center; border-bottom:3px solid transparent; margin-bottom:-3px; transition:all 0.2s; cursor:pointer; }
     nav a.active { color:var(--yellow); border-bottom-color:var(--yellow); }
     nav a:hover { color:var(--text); }
+    @media (max-width:600px) {
+      header { flex-direction:column; height:auto; padding:16px 20px 0; gap:0; align-items:flex-start; }
+      nav { margin-left:0; width:100%; border-top:1px solid var(--border); margin-top:12px; }
+      nav a { height:44px; padding:0 16px; font-size:10px; letter-spacing:2px; border-bottom:2px solid transparent; margin-bottom:0; }
+      nav a.active { border-bottom-color:var(--yellow); }
+    }
 
     .tab { display:none; }
     .tab.active { display:block; }
@@ -149,11 +155,9 @@
 
     @media (max-width:900px) {
       .team-grid { grid-template-columns:1fr; }
-      header { padding:0 20px; }
       .page,.page-narrow { padding:24px 20px; }
       td.bar-cell { display:none; }
       .losers-podium { flex-direction:column; }
-      nav a { padding:0 12px; font-size:10px; }
     }
   </style>
 </head>
@@ -324,26 +328,8 @@ function renderLosers(losses) {
   const ranking = losses.ranking;
   const history = losses.history || [];
 
-  // Podium top 3
-  let podiumHtml = '<div class="losers-podium">';
-  const top3 = ranking.slice(0, 3);
-  // order: 2nd, 1st, 3rd
-  const order = top3.length >= 3 ? [top3[1], top3[0], top3[2]] : top3.length === 2 ? [top3[1], top3[0]] : [top3[0]];
-  const places = top3.length >= 3 ? [2,1,3] : top3.length === 2 ? [2,1] : [1];
-  order.forEach((p, idx) => {
-    if (!p) return;
-    const isFirst = places[idx] === 1;
-    podiumHtml += `<div class="podium-card${isFirst?' first':''}">
-      <div class="podium-place">${places[idx]}</div>
-      <div class="podium-name">${p.name}</div>
-      <div class="podium-count">${p.count}</div>
-      <div class="podium-label">програш${p.count===1?'':'ів'}</div>
-    </div>`;
-  });
-  podiumHtml += '</div>';
-
-  // Full list
-  let listHtml = '<div class="section-label" style="margin-bottom:16px">Повний список</div><div class="losers-list">';
+  // List only
+  let listHtml = '<div class="losers-list">';
   ranking.forEach((p, i) => {
     listHtml += `<div class="loser-item">
       <div class="loser-rank">${i+1}</div>
@@ -371,7 +357,7 @@ function renderLosers(losses) {
     histHtml += '</div>';
   }
 
-  el.innerHTML = podiumHtml + listHtml + histHtml;
+  el.innerHTML = listHtml + histHtml;
 }
 
 // ===================== GAMES =====================
