@@ -410,7 +410,7 @@ function renderGames() {
     let daysNote = '';
     if (isNext) {
       const diff = Math.ceil((matchDate - now) / 86400000);
-      daysNote = diff===0?' · Сьогодні!':\` · за ${diff} дн.\`;
+      daysNote = diff===0?' · Сьогодні!':' · за ' + diff + ' дн.';
     }
     card.innerHTML = `<div class="match-date">${m.day} ${monthNamesUA[m.month]} · ${m.time}${daysNote}</div>
       <div class="match-vs">vs <span>${m.opponent}</span></div>${badge}`;
