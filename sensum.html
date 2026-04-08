@@ -22,12 +22,11 @@
     @media (max-width:600px) {
       header { flex-direction:column; height:auto; padding:16px 20px 0; gap:0; align-items:center; }
       header > div:first-child { width:100%; display:flex; justify-content:center; }
-      nav { margin-left:0; width:100%; margin-top:12px; display:flex; justify-content:center; border-bottom:none; }
-      nav a { height:40px; padding:0 14px; font-size:10px; letter-spacing:1px; border-bottom:none; margin-bottom:0; border-top:2px solid transparent; }
-      nav a.active { color:var(--yellow); border-top:2px solid var(--yellow); }
+      nav { margin-left:0; width:100%; margin-top:12px; display:flex; justify-content:center; }
+      nav a { height:40px; padding:0 14px; font-size:10px; letter-spacing:1px; border-bottom:none !important; border-top:none !important; margin-bottom:0; }
+      nav a.active { color:var(--yellow); }
+      th.bar-th { display:none; }
       td.bar-cell { display:none !important; }
-      td.avg-cell { text-align:right; }
-      td.delta-cell { width:56px; }
     }
 
     .tab { display:none; }
@@ -283,7 +282,7 @@ function renderRating(ratings) {
 
   let html = `<table>
     <thead><tr>
-      <th>#</th><th>Гравець</th><th>Рівень</th>
+      <th>#</th><th>Гравець</th><th class="bar-th">Рівень</th>
       <th class="right">Бал</th><th class="center">±</th>
     </tr></thead><tbody>`;
 
