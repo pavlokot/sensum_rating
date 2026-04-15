@@ -333,7 +333,7 @@ function renderRating(ratings) {
     if (!hasPlayed) totalHtml = `<span class="delta none">—</span>`;
     else if (totalChange > 0) totalHtml = `<span class="delta up">+${totalChange.toFixed(1)}</span>`;
     else if (totalChange < 0) totalHtml = `<span class="delta down">${totalChange.toFixed(1)}</span>`;
-    else totalHtml = `<span class="delta" style="color:var(--yellow)">0</span>`;
+    else totalHtml = `<span class="delta none">0</span>`;
 
     html += `<tr class="rating-row${topClass}${avgClass}">
       <td class="rank">${rank}</td>
