@@ -319,7 +319,6 @@ function renderRating(ratings) {
 
     // Total change from base
     const totalChange = p.totalChange || 0;
-    const trend = parseFloat(p.trend) || 0;
     const hasPlayed = p.prev !== null;
     let totalHtml, deltaHtml;
 
@@ -329,7 +328,7 @@ function renderRating(ratings) {
     } else {
       if (totalChange > 0) totalHtml = `<span class="delta up">+${totalChange.toFixed(1)}</span>`;
       else if (totalChange < 0) totalHtml = `<span class="delta down">${totalChange.toFixed(1)}</span>`;
-      else totalHtml = `<span class="delta none">0</span>`;
+      else totalHtml = `<span class="delta" style="color:var(--muted)">0</span>`;
 
       if (trend === 0) deltaHtml = `<span class="delta none">—</span>`;
       else if (trend > 0) deltaHtml = `<span class="delta up">+${trend.toFixed(1)}</span>`;
