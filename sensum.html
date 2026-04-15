@@ -319,7 +319,7 @@ function renderRating(ratings) {
 
     // Total change from base
     const totalChange = p.totalChange || 0;
-    const hasPlayed = p.prev !== null;
+    const hasPlayed = trend !== 0 || totalChange !== 0;
     let totalHtml, deltaHtml;
 
     if (!hasPlayed) {
