@@ -301,7 +301,7 @@ function renderRating(ratings) {
   let html = `<table>
     <thead><tr>
       <th>#</th><th>Гравець</th><th class="bar-th">Рівень</th>
-      <th class="right">Бал</th><th class="center">±</th>
+      <th class="right">Бал</th><th class="center">Сезон</th><th class="center">Остання</th>
     </tr></thead><tbody>`;
 
   ratings.forEach((p, i) => {
@@ -325,11 +325,20 @@ function renderRating(ratings) {
     }
 
     const photoUrl = PLAYER_PHOTOS[p.name] || null;
+
+    // Total change from base
+    const totalChange = p.totalChange || 0;
+    let totalHtml;
+    if (totalChange > 0) totalHtml = `<span class="delta up">+${totalChange.toFixed(1)}</span>`;
+    else if (totalChange < 0) totalHtml = `<span class="delta down">${totalChange.toFixed(1)}</span>`;
+    else totalHtml = `<span class="delta none">—</span>`;
+
     html += `<tr class="rating-row${topClass}${avgClass}">
       <td class="rank">${rank}</td>
       <td class="p-name${photoUrl ? ' has-photo' : ''}" ${photoUrl ? `data-photo="${photoUrl}"` : ''}>${p.name}</td>
       <td class="bar-cell"><div class="bar-wrap"><div class="bar" style="width:${barW}%;background:${barColor}"></div></div></td>
       <td class="avg-cell"><div class="avg-num">${avg.toFixed(1)}</div></td>
+      <td class="delta-cell">${totalHtml}</td>
       <td class="delta-cell">${deltaHtml}</td>
     </tr>`;
   });
