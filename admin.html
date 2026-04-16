@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SENSUM Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --yellow:#E8C800; --dark:#0E0E0E; --card:#161616; --border:#222; --text:#FFF; --muted:#555; --green:#4CAF50; --red:#F44336; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--dark); color:var(--text); font-family:'Manrope',sans-serif; min-height:100vh; }
+
+    .login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; }
+    .login-box { background:var(--card); border:1px solid var(--border); padding:48px 40px; width:320px; text-align:center; }
+    .login-title { font-family:'Bebas Neue',sans-serif; font-size:36px; letter-spacing:6px; margin-bottom:4px; }
+    .login-sub { font-size:11px; letter-spacing:3px; color:var(--yellow); text-transform:uppercase; margin-bottom:32px; }
+    .login-input { width:100%; background:var(--dark); border:1px solid var(--border); color:var(--text); font-size:16px; padding:12px 16px; letter-spacing:2px; outline:none; margin-bottom:12px; }
+    .login-input:focus { border-color:var(--yellow); }
+    .login-btn { width:100%; background:var(--yellow); color:#000; font-size:13px; letter-spacing:3px; text-transform:uppercase; padding:12px; border:none; cursor:pointer; font-weight:700; }
+    .login-error { color:var(--red); font-size:12px; letter-spacing:2px; margin-top:8px; display:none; }
+
+    .main-screen { display:none; }
+    header { background:#000; padding:0 32px; display:flex; align-items:center; gap:16px; height:64px; border-bottom:3px solid var(--yellow); }
+    .logo-text { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:6px; }
+    .logo-sub { font-size:9px; letter-spacing:3px; color:var(--yellow); text-transform:uppercase; margin-top:2px; }
+    .admin-badge { margin-left:auto; background:var(--yellow); color:#000; font-size:9px; letter-spacing:3px; text-transform:uppercase; padding:4px 12px; font-weight:700; }
+
+    .tabs { display:flex; border-bottom:1px solid var(--border); background:#000; padding:0 32px; }
+    .tab-btn { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); padding:16px 24px; border:none; background:none; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.2s; font-family:'Manrope',sans-serif; font-weight:600; }
+    .tab-btn.active { color:var(--yellow); border-bottom-color:var(--yellow); }
+
+    .page { max-width:800px; margin:0 auto; padding:32px; }
+    .section-title { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:3px; margin-bottom:8px; }
+    .section-sub { font-size:11px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-bottom:24px; }
+    .counter { font-size:11px; color:var(--muted); letter-spacing:2px; margin-bottom:16px; }
+    .counter span { color:var(--yellow); font-weight:700; }
+
+    .player-list { display:flex; flex-direction:column; gap:2px; margin-bottom:24px; }
+    .player-row { display:flex; align-items:center; gap:16px; padding:12px 16px; background:var(--card); border:1px solid var(--border); border-left:3px solid transparent; transition:all 0.15s; }
+    .player-row.is-win { border-left-color:var(--green); background:#0D1A0D; }
+    .player-row.is-lose { border-left-color:var(--red); background:#1A0D0D; }
+    .player-row.is-selected { border-left-color:var(--yellow); background:#141200; }
+    .player-name { flex:1; font-size:13px; letter-spacing:1px; text-transform:uppercase; font-weight:600; }
+    .player-rating { font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--muted); min-width:40px; text-align:right; }
+
+    .checks { display:flex; gap:6px; }
+    .check-wrap { display:flex; align-items:center; cursor:pointer; }
+    .check-wrap input { display:none; }
+    .check-box { width:36px; height:36px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:11px; letter-spacing:1px; font-weight:700; transition:all 0.15s; color:var(--muted); }
+    .check-wrap.win input:checked ~ .check-box { background:var(--green); border-color:var(--green); color:#fff; }
+    .check-wrap.lose input:checked ~ .check-box { background:var(--red); border-color:var(--red); color:#fff; }
+    .check-wrap.sel input:checked ~ .check-box { background:var(--yellow); border-color:var(--yellow); color:#000; }
+
+    .submit-btn { width:100%; padding:16px; background:var(--yellow); color:#000; font-size:13px; letter-spacing:3px; text-transform:uppercase; border:none; cursor:pointer; font-weight:700; }
+    .submit-btn:disabled { opacity:0.4; cursor:not-allowed; }
+    .split-btn { width:100%; padding:14px; background:var(--card); border:1px solid var(--yellow); color:var(--yellow); font-size:12px; letter-spacing:3px; text-transform:uppercase; cursor:pointer; margin-bottom:2px; font-weight:700; }
+    .split-btn:hover { background:var(--yellow); color:#000; }
+
+    .result-msg { margin-top:12px; font-size:12px; letter-spacing:2px; text-align:center; padding:12px; display:none; }
+    .result-msg.ok { background:#0D1A0D; color:var(--green); border:1px solid var(--green); }
+    .result-msg.err { background:#1A0D0D; color:var(--red); border:1px solid var(--red); }
+
+    .teams-output { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:20px; }
+    .team-card { background:var(--card); border:1px solid var(--border); padding:20px; }
+    .team-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:3px; color:var(--yellow); margin-bottom:12px; }
+    .team-player { padding:8px 0; border-bottom:1px solid var(--border); font-size:12px; letter-spacing:1px; text-transform:uppercase; display:flex; justify-content:space-between; font-weight:600; }
+    .team-player:last-child { border-bottom:none; }
+    .team-score { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--muted); }
+    .team-total { margin-top:10px; font-size:10px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; }
+
+    .loading { padding:40px; text-align:center; color:var(--muted); font-size:12px; letter-spacing:3px; text-transform:uppercase; }
+
+    @media(max-width:600px) {
+      .page { padding:20px; }
+      .teams-output { grid-template-columns:1fr; }
+      header { padding:0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-title">SENSUM</div>
+    <div class="login-sub">Admin Panel</div>
+    <input type="password" class="login-input" id="pwInput" placeholder="Пароль..." onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="login-btn" onclick="checkPw()">Увійти</button>
+    <div class="login-error" id="loginError">Невірний пароль</div>
+  </div>
+</div>
+
+<div class="main-screen" id="mainScreen">
+  <header>
+    <div>
+      <div class="logo-text">SENSUM</div>
+      <div class="logo-sub">Football Club</div>
+    </div>
+    <div class="admin-badge">Admin</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('results')">Результати</button>
+    <button class="tab-btn" onclick="showTab('teams')">Команди</button>
+  </div>
+
+  <div id="tab-results">
+    <div class="page">
+      <div class="section-title">РЕЗУЛЬТАТИ</div>
+      <div class="section-sub">В — переміг · П — програв · без позначки = не грав</div>
+      <div class="counter">Відмічено: <span id="winCount">0</span> перемог · <span id="loseCount">0</span> програшів</div>
+      <div class="player-list" id="resultsList"><div class="loading">Завантаження...</div></div>
+      <button class="submit-btn" id="submitBtn" onclick="submitResults()">Зберегти результати</button>
+      <div class="result-msg" id="resultMsg"></div>
+    </div>
+  </div>
+
+  <div id="tab-teams" style="display:none">
+    <div class="page">
+      <div class="section-title">КОМАНДИ</div>
+      <div class="section-sub">Обери гравців які прийдуть сьогодні</div>
+      <div class="counter">Обрано: <span id="selectedCount">0</span> гравців</div>
+      <div class="player-list" id="teamsList"><div class="loading">Завантаження...</div></div>
+      <button class="split-btn" onclick="splitTeams(2)">Розділити на 2 команди</button>
+      <button class="split-btn" onclick="splitTeams(3)">Розділити на 3 команди</button>
+      <div id="teamsOutput"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PASSWORD = 'sensum2026';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyMp50nPoW6bIH2GbIF6Hrvz_E7bQFtiPH8mWMvRfZnmYoIeanWBqZmpdv9kJUHaGLQ/exec';
+let PLAYERS = [];
+
+function checkPw() {
+  if (document.getElementById('pwInput').value === PASSWORD) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainScreen').style.display = 'block';
+    loadPlayers();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function showTab(tab) {
+  document.getElementById('tab-results').style.display = tab === 'results' ? 'block' : 'none';
+  document.getElementById('tab-teams').style.display = tab === 'teams' ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', (i===0&&tab==='results')||(i===1&&tab==='teams'));
+  });
+}
+
+async function loadPlayers() {
+  try {
+    const res = await fetch(SCRIPT_URL);
+    const data = await res.json();
+    PLAYERS = data.ratings.map(p => ({name: p.name, rating: p.rating}));
+    buildLists();
+  } catch(e) {
+    document.getElementById('resultsList').innerHTML = '<div style="color:red;padding:20px">Помилка завантаження</div>';
+  }
+}
+
+function buildLists() {
+  buildResultsList();
+  buildTeamsList();
+}
+
+function buildResultsList() {
+  const list = document.getElementById('resultsList');
+  list.innerHTML = '';
+  PLAYERS.forEach((p, i) => {
+    const row = document.createElement('div');
+    row.className = 'player-row';
+    row.id = 'rrow_' + i;
+    row.innerHTML = `
+      <div class="player-name">${p.name}</div>
+      <div class="player-rating">${p.rating.toFixed(1)}</div>
+      <div class="checks">
+        <label class="check-wrap win" title="Переміг">
+          <input type="checkbox" id="win_${i}" onchange="onCheck(${i},'win')">
+          <div class="check-box">В</div>
+        </label>
+        <label class="check-wrap lose" title="Програв">
+          <input type="checkbox" id="lose_${i}" onchange="onCheck(${i},'lose')">
+          <div class="check-box">П</div>
+        </label>
+      </div>`;
+    list.appendChild(row);
+  });
+}
+
+function buildTeamsList() {
+  const list = document.getElementById('teamsList');
+  list.innerHTML = '';
+  PLAYERS.forEach((p, i) => {
+    const row = document.createElement('div');
+    row.className = 'player-row';
+    row.style.cursor = 'pointer';
+    row.id = 'trow_' + i;
+    row.innerHTML = `
+      <div class="player-name">${p.name}</div>
+      <div class="player-rating">${p.rating.toFixed(1)}</div>
+      <label class="check-wrap sel">
+        <input type="checkbox" id="tcheck_${i}" onchange="onTeamCheck()">
+        <div class="check-box">✓</div>
+      </label>`;
+    row.addEventListener('click', e => {
+      if (e.target.tagName !== 'INPUT') {
+        const cb = document.getElementById('tcheck_' + i);
+        cb.checked = !cb.checked;
+        onTeamCheck();
+      }
+    });
+    list.appendChild(row);
+  });
+}
+
+function onCheck(i, type) {
+  const winCb = document.getElementById('win_' + i);
+  const loseCb = document.getElementById('lose_' + i);
+  const row = document.getElementById('rrow_' + i);
+  if (type === 'win' && winCb.checked) loseCb.checked = false;
+  if (type === 'lose' && loseCb.checked) winCb.checked = false;
+  row.classList.toggle('is-win', winCb.checked);
+  row.classList.toggle('is-lose', loseCb.checked);
+  document.getElementById('winCount').textContent = document.querySelectorAll('[id^="win_"]:checked').length;
+  document.getElementById('loseCount').textContent = document.querySelectorAll('[id^="lose_"]:checked').length;
+}
+
+function onTeamCheck() {
+  const count = document.querySelectorAll('[id^="tcheck_"]:checked').length;
+  document.getElementById('selectedCount').textContent = count;
+  PLAYERS.forEach((_, i) => {
+    const cb = document.getElementById('tcheck_' + i);
+    document.getElementById('trow_' + i).classList.toggle('is-selected', cb.checked);
+  });
+  document.getElementById('teamsOutput').innerHTML = '';
+}
+
+function submitResults() {
+  const winners = [], losers = [];
+  PLAYERS.forEach((p, i) => {
+    if (document.getElementById('win_' + i).checked) winners.push(p.name);
+    if (document.getElementById('lose_' + i).checked) losers.push(p.name);
+  });
+  if (!winners.length && !losers.length) { showMsg('Нікого не відмічено!', false); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Зберігаємо...';
+
+  const formData = new FormData();
+  formData.append('data', JSON.stringify({ action: 'weekly', winners, losers }));
+
+  fetch(SCRIPT_URL, { method:'POST', body: formData })
+    .then(() => { showMsg('✓ Збережено! Рейтинг оновлено.', true); })
+    .catch(() => { showMsg('✓ Відправлено!', true); })
+    .finally(() => { btn.disabled = false; btn.textContent = 'Зберегти результати'; });
+}
+
+function showMsg(text, ok) {
+  const el = document.getElementById('resultMsg');
+  el.textContent = text;
+  el.className = 'result-msg ' + (ok ? 'ok' : 'err');
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 4000);
+}
+
+function splitTeams(n) {
+  const selected = PLAYERS.filter((_, i) => document.getElementById('tcheck_' + i).checked);
+  if (selected.length < n * 2) {
+    document.getElementById('teamsOutput').innerHTML =
+      '<div style="color:var(--red);font-size:12px;letter-spacing:2px;padding:16px 0">Замало гравців для ' + n + ' команд</div>';
+    return;
+  }
+
+  const sorted = [...selected].sort((a,b) => b.rating - a.rating);
+  const teams = Array.from({length: n}, () => ({players:[], total:0}));
+
+  sorted.forEach(p => {
+    const minIdx = teams.reduce((min, t, i) => t.total < teams[min].total ? i : min, 0);
+    teams[minIdx].players.push(p);
+    teams[minIdx].total = Math.round((teams[minIdx].total + p.rating) * 100) / 100;
+  });
+
+  teams.forEach(t => t.players.sort((a,b) => b.rating - a.rating));
+
+  document.getElementById('teamsOutput').innerHTML =
+    '<div class="teams-output">' +
+    teams.map((t, i) => `
+      <div class="team-card">
+        <div class="team-title">КОМАНДА ${i+1}</div>
+        ${t.players.map(p => `
+          <div class="team-player">
+            <span>${p.name}</span>
+            <span class="team-score">${p.rating.toFixed(1)}</span>
+          </div>`).join('')}
+        <div class="team-total">Сума: ${t.total.toFixed(2)}</div>
+      </div>`).join('') +
+    '</div>';
+}
+</script>
+</body>
+</html>
