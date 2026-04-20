@@ -70,6 +70,13 @@
 
     .loading { padding:40px; text-align:center; color:var(--muted); font-size:12px; letter-spacing:3px; text-transform:uppercase; }
 
+    .guest-row { display:flex; gap:8px; align-items:center; }
+    .guest-name { flex:2; background:var(--dark); border:1px solid var(--border); color:var(--text); font-size:13px; padding:10px 12px; outline:none; font-family:'Manrope',sans-serif; }
+    .guest-name:focus { border-color:var(--yellow); }
+    .guest-rating { width:70px; background:var(--dark); border:1px solid var(--border); color:var(--text); font-size:13px; padding:10px 12px; outline:none; text-align:center; font-family:'Manrope',sans-serif; }
+    .guest-rating:focus { border-color:var(--yellow); }
+    .guest-remove { width:36px; height:36px; background:none; border:1px solid var(--border); color:var(--muted); font-size:18px; cursor:pointer; flex-shrink:0; }
+    .guest-remove:hover { border-color:var(--red); color:var(--red); }
     @media(max-width:600px) {
       .page { padding:20px; }
       .teams-output { grid-template-columns:1fr; }
@@ -120,6 +127,11 @@
       <div class="section-sub">Обери гравців які прийдуть сьогодні</div>
       <div class="counter">Обрано: <span id="selectedCount">0</span> гравців</div>
       <div class="player-list" id="teamsList"><div class="loading">Завантаження...</div></div>
+      <div style="margin-bottom:16px;margin-top:8px;">
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:12px;display:flex;align-items:center;gap:10px;">Гості <span style="flex:1;height:1px;background:var(--border);display:block"></span></div>
+        <div id="guestList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+        <button onclick="addGuest()" style="background:none;border:1px dashed var(--border);color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:10px;width:100%;cursor:pointer;">+ Додати гостя</button>
+      </div>
       <button class="split-btn" onclick="splitTeams(2)">Розділити на 2 команди</button>
       <button class="split-btn" onclick="splitTeams(3)">Розділити на 3 команди</button>
       <div id="teamsOutput"></div>
@@ -267,8 +279,37 @@ function showMsg(text, ok) {
   setTimeout(() => el.style.display = 'none', 4000);
 }
 
+function addGuest() {
+  const list = document.getElementById('guestList');
+  const i = Date.now();
+  const row = document.createElement('div');
+  row.className = 'guest-row';
+  row.id = 'guest_' + i;
+  row.innerHTML = `
+    <input type="text" class="guest-name" placeholder="Ім'я гостя" id="gname_${i}">
+    <input type="number" class="guest-rating" placeholder="Рейтинг" min="1" max="10" step="0.1" id="grating_${i}" value="5">
+    <button class="guest-remove" onclick="document.getElementById('guest_${i}').remove()">×</button>
+  `;
+  list.appendChild(row);
+  document.getElementById('gname_' + i).focus();
+}
+
+function getGuests() {
+  const guests = [];
+  document.querySelectorAll('.guest-row').forEach(row => {
+    const id = row.id.replace('guest_', '');
+    const name = document.getElementById('gname_' + id).value.trim();
+    const rating = parseFloat(document.getElementById('grating_' + id).value) || 5;
+    if (name) guests.push({name, rating});
+  });
+  return guests;
+}
+
 function splitTeams(n) {
-  const selected = PLAYERS.filter((_, i) => document.getElementById('tcheck_' + i).checked);
+  const selected = [
+    ...PLAYERS.filter((_, i) => document.getElementById('tcheck_' + i).checked),
+    ...getGuests()
+  ];
   if (selected.length < n * 2) {
     document.getElementById('teamsOutput').innerHTML =
       '<div style="color:var(--red);font-size:12px;letter-spacing:2px;padding:16px 0">Замало гравців для ' + n + ' команд</div>';
