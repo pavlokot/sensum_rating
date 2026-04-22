@@ -262,10 +262,12 @@ function submitResults() {
   btn.disabled = true;
   btn.textContent = 'Зберігаємо...';
 
-  const formData = new FormData();
-  formData.append('data', JSON.stringify({ action: 'weekly', winners, losers }));
-
-  fetch(SCRIPT_URL, { method:'POST', body: formData })
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'weekly', winners, losers })
+  })
     .then(() => { showMsg('✓ Збережено! Рейтинг оновлено.', true); })
     .catch(() => { showMsg('✓ Відправлено!', true); })
     .finally(() => { btn.disabled = false; btn.textContent = 'Зберегти результати'; });
