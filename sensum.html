@@ -421,13 +421,13 @@ function renderLosers(losses) {
 
 // ===================== GAMES =====================
 const matches = [
-  {day:11,month:4,time:'15:30',opponent:'V 12'},
-  {day:18,month:4,time:'11:00',opponent:'CLUB 8'},
-  {day:25,month:4,time:'14:30',opponent:'ПРЕЗИДЕНТИ'},
-  {day:2, month:5,time:'11:00',opponent:'STORGOM.UA'},
-  {day:9, month:5,time:'15:30',opponent:'УС'},
-  {day:16,month:5,time:'12:00',opponent:'V 12'},
-  {day:30,month:5,time:'14:30',opponent:'CLUB 8'},
+  {day:11,month:4,time:'15:30',opponent:'V 12',score:null,goals:[]},
+  {day:18,month:4,time:'11:00',opponent:'CLUB 8',score:'1:7',goals:['Самощенко']},
+  {day:25,month:4,time:'14:30',opponent:'ПРЕЗИДЕНТИ',score:null,goals:[]},
+  {day:2, month:5,time:'11:00',opponent:'STORGOM.UA',score:null,goals:[]},
+  {day:9, month:5,time:'15:30',opponent:'УС',score:null,goals:[]},
+  {day:16,month:5,time:'12:00',opponent:'V 12',score:null,goals:[]},
+  {day:30,month:5,time:'14:30',opponent:'CLUB 8',score:null,goals:[]},
 ];
 const monthNamesUA = ['','Січня','Лютого','Березня','Квітня','Травня','Червня','Липня','Серпня','Вересня','Жовтня','Листопада','Грудня'];
 
@@ -457,8 +457,21 @@ function renderGames() {
       const diff = Math.ceil((matchDate - now) / 86400000);
       daysNote = diff===0?' · Сьогодні!':' · за ' + diff + ' дн.';
     }
+
+    let scoreHtml = '';
+    if (m.score) {
+      const [our, their] = m.score.split(':').map(Number);
+      const isWin = our > their;
+      const isDraw = our === their;
+      const scoreColor = isWin ? '#4CAF50' : isDraw ? '#E8C800' : '#F44336';
+      scoreHtml = `<div class="match-score" style="font-family:'Bravo',sans-serif;font-size:32px;color:${scoreColor};letter-spacing:2px;margin-top:8px;">${m.score}</div>`;
+      if (m.goals && m.goals.length > 0) {
+        scoreHtml += `<div class="match-goals" style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">⚽ ${m.goals.join(', ')}</div>`;
+      }
+    }
+
     card.innerHTML = `<div class="match-date">${m.day} ${monthNamesUA[m.month]} · ${m.time}${daysNote}</div>
-      <div class="match-vs">vs <span>${m.opponent}</span></div>${badge}`;
+      <div class="match-vs">vs <span>${m.opponent}</span></div>${scoreHtml}${badge}`;
     grid.appendChild(card);
   });
 }
@@ -487,13 +500,13 @@ const bdPlayers = [
   {name:"Шило Валерій",day:10,month:9},
 ];
 const gameDates = [
-  {day:11,month:4,opponent:'V 12',time:'15:30'},
-  {day:18,month:4,opponent:'CLUB 8',time:'11:00'},
-  {day:25,month:4,opponent:'ПРЕЗИДЕНТИ',time:'14:30'},
-  {day:2,month:5,opponent:'STORGOM.UA',time:'11:00'},
-  {day:9,month:5,opponent:'УС',time:'15:30'},
-  {day:16,month:5,opponent:'V 12',time:'12:00'},
-  {day:30,month:5,opponent:'CLUB 8',time:'14:30'},
+  {day:11,month:4,opponent:'V 12',time:'15:30',score:null,goals:[]},
+  {day:18,month:4,opponent:'CLUB 8',time:'11:00',score:'1:7',goals:['Самощенко']},
+  {day:25,month:4,opponent:'ПРЕЗИДЕНТИ',time:'14:30',score:null,goals:[]},
+  {day:2,month:5,opponent:'STORGOM.UA',time:'11:00',score:null,goals:[]},
+  {day:9,month:5,opponent:'УС',time:'15:30',score:null,goals:[]},
+  {day:16,month:5,opponent:'V 12',time:'12:00',score:null,goals:[]},
+  {day:30,month:5,opponent:'CLUB 8',time:'14:30',score:null,goals:[]},
 ];
 const monthNames = ["Січень","Лютий","Березень","Квітень","Травень","Червень","Липень","Серпень","Вересень","Жовтень","Листопад","Грудень"];
 const monthNamesUC = monthNames.map(m=>m.toUpperCase());
