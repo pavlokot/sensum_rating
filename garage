@@ -1,0 +1,522 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>WhiteGarage — Авторемонт · Шиномонтаж · Доставка авто з США</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --navy: #0A0F1E;
+  --blue: #2563EB;
+  --blue-light: #3B82F6;
+  --frost: #F5F7FA;
+  --steel: #64748B;
+  --white: #FFFFFF;
+  --border: rgba(255,255,255,0.08);
+  --border-light: rgba(10,15,30,0.1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',sans-serif;background:var(--navy);color:var(--white);overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.25rem 2.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(10,15,30,0.85);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo svg{width:28px;height:28px}
+.nav-logo-text{font-size:18px;font-weight:600;color:var(--white);letter-spacing:-.01em}
+.nav-logo-text span{color:var(--blue)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:rgba(255,255,255,0.6);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.nav-cta{background:var(--blue);color:var(--white);padding:8px 20px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;transition:background .2s}
+.nav-cta:hover{background:var(--blue-light)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 2.5rem 5rem;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0A0F1E 0%,#0f1a2e 50%,#0A0F1E 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(37,99,235,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,0.06) 1px,transparent 1px);background-size:60px 60px;animation:gridMove 20s linear infinite}
+@keyframes gridMove{0%{transform:translateY(0)}100%{transform:translateY(60px)}}
+.hero-accent{position:absolute;top:15%;right:5%;width:480px;height:480px;background:radial-gradient(circle,rgba(37,99,235,0.15) 0%,transparent 70%);pointer-events:none}
+.hero-label{font-size:12px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin-bottom:1rem;opacity:0;animation:fadeUp .6s .2s forwards}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,10vw,130px);line-height:.95;letter-spacing:-.01em;margin-bottom:1.5rem;opacity:0;animation:fadeUp .7s .3s forwards}
+.hero-title span{color:var(--blue)}
+.hero-sub{font-size:18px;color:rgba(255,255,255,0.55);max-width:480px;line-height:1.6;margin-bottom:2.5rem;opacity:0;animation:fadeUp .7s .4s forwards}
+.hero-actions{display:flex;gap:1rem;align-items:center;opacity:0;animation:fadeUp .7s .5s forwards}
+.btn-primary{background:var(--blue);color:var(--white);padding:14px 28px;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{background:var(--blue-light);transform:translateY(-1px)}
+.btn-secondary{color:rgba(255,255,255,0.7);font-size:15px;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .2s}
+.btn-secondary:hover{color:var(--white)}
+.hero-stats{position:absolute;right:2.5rem;bottom:5rem;display:flex;flex-direction:column;gap:1.5rem;opacity:0;animation:fadeLeft .8s .6s forwards}
+.stat{text-align:right}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--white);line-height:1}
+.stat-num span{color:var(--blue)}
+.stat-label{font-size:12px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.08em}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeLeft{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+
+/* TRUST BAR */
+.trust-bar{background:#111827;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);padding:1.25rem 2.5rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap}
+.trust-item{display:flex;align-items:center;gap:10px;font-size:14px;color:rgba(255,255,255,0.55);font-weight:500}
+.trust-item svg{color:var(--blue);flex-shrink:0}
+
+/* SECTION BASE */
+section{padding:6rem 2.5rem}
+.section-label{font-size:12px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin-bottom:.75rem}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(42px,5vw,64px);line-height:1;margin-bottom:1.5rem}
+.section-sub{font-size:16px;color:rgba(255,255,255,0.5);line-height:1.7;max-width:520px}
+
+/* SERVICES */
+.services-section{background:var(--frost);color:var(--navy)}
+.services-section .section-label{color:var(--blue)}
+.services-section .section-title{color:var(--navy)}
+.services-section .section-sub{color:var(--steel)}
+.services-top{display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex-wrap:wrap;margin-bottom:3rem}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.service-card{background:var(--white);border-radius:16px;padding:2rem;border:0.5px solid var(--border-light);transition:all .25s;position:relative;overflow:hidden}
+.service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--blue);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.service-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(37,99,235,0.12)}
+.service-card:hover::before{transform:scaleX(1)}
+.service-icon{width:48px;height:48px;background:#EFF6FF;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem}
+.service-icon svg{width:24px;height:24px;color:var(--blue)}
+.service-name{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:.5rem}
+.service-desc{font-size:14px;color:var(--steel);line-height:1.6}
+.service-items{list-style:none;margin-top:1rem;display:flex;flex-direction:column;gap:6px}
+.service-items li{font-size:13px;color:var(--steel);display:flex;align-items:center;gap:8px}
+.service-items li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--blue);flex-shrink:0}
+
+/* MAP + CONTACTS */
+.contacts-row{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3rem}
+.contact-card{background:var(--white);border-radius:16px;padding:2rem;border:0.5px solid var(--border-light)}
+.contact-card h3{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:1.25rem}
+.contact-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:1rem}
+.contact-icon{width:36px;height:36px;background:#EFF6FF;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.contact-icon svg{width:18px;height:18px;color:var(--blue)}
+.contact-text{font-size:14px;color:var(--steel);line-height:1.5}
+.contact-text strong{display:block;font-size:15px;color:var(--navy);font-weight:600;margin-bottom:2px}
+.phone-big{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--navy);letter-spacing:.02em;text-decoration:none;display:block;margin-top:.5rem;transition:color .2s}
+.phone-big:hover{color:var(--blue)}
+.map-placeholder{background:#E8F0FE;border-radius:12px;height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;margin-top:1rem;border:0.5px solid var(--border-light);position:relative;overflow:hidden}
+.map-placeholder::before{content:'';position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><path d="M0 20h40M20 0v40" stroke="%232563EB" stroke-width=".3" opacity=".3"/></svg>') repeat}
+.map-pin{width:36px;height:36px;background:var(--blue);border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(37,99,235,0.4)}
+.map-pin::after{content:'';width:12px;height:12px;background:white;border-radius:50%;transform:rotate(45deg)}
+.map-address{font-size:13px;color:var(--steel);font-weight:500;text-align:center;z-index:1}
+.map-link{font-size:13px;color:var(--blue);font-weight:600;text-decoration:none;z-index:1}
+
+/* CARS */
+.cars-section{background:var(--navy)}
+.cars-intro{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;gap:2rem;flex-wrap:wrap}
+.exp-badge{background:rgba(37,99,235,0.15);border:0.5px solid rgba(37,99,235,0.3);border-radius:12px;padding:1.25rem 1.75rem;text-align:center}
+.exp-num{font-family:'Bebas Neue',sans-serif;font-size:56px;color:var(--blue);line-height:1}
+.exp-label{font-size:13px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.08em}
+.cars-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:3rem}
+.car-card{border-radius:14px;overflow:hidden;position:relative;aspect-ratio:4/3;background:#111827;border:0.5px solid var(--border)}
+.car-card img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.car-card:hover img{transform:scale(1.04)}
+.car-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,15,30,0.8) 0%,transparent 50%)}
+.car-label{position:absolute;bottom:1rem;left:1rem;right:1rem}
+.car-name{font-size:15px;font-weight:700;color:var(--white)}
+.car-meta{font-size:12px;color:rgba(255,255,255,0.55);margin-top:2px}
+.car-badge{position:absolute;top:.75rem;right:.75rem;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.badge-available{background:rgba(34,197,94,0.2);color:#4ade80;border:0.5px solid rgba(34,197,94,0.3)}
+.badge-transit{background:rgba(37,99,235,0.2);color:#60a5fa;border:0.5px solid rgba(37,99,235,0.3)}
+
+/* car image fallbacks with gradients */
+.car-img-1{background:linear-gradient(135deg,#1a2744 0%,#243460 100%)}
+.car-img-2{background:linear-gradient(135deg,#1c1f2e 0%,#2a2d3e 100%)}
+.car-img-3{background:linear-gradient(135deg,#162030 0%,#1e3048 100%)}
+.car-img-4{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%)}
+.car-img-5{background:linear-gradient(135deg,#0f2027 0%,#203a43 100%)}
+
+.car-svg-wrapper{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:20px}
+
+.pillars-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+.pillar-card{background:rgba(255,255,255,0.04);border:0.5px solid var(--border);border-radius:14px;padding:1.5rem}
+.pillar-icon-wrap{font-size:24px;margin-bottom:.75rem}
+.pillar-title{font-size:15px;font-weight:700;margin-bottom:.4rem}
+.pillar-desc{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6}
+
+/* FOOTER */
+footer{background:#060a14;border-top:0.5px solid var(--border);padding:3rem 2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:gap:1rem}
+.footer-logo{display:flex;align-items:center;gap:10px}
+.footer-logo-text{font-size:16px;font-weight:600;color:var(--white)}
+.footer-logo-text span{color:var(--blue)}
+.footer-copy{font-size:13px;color:rgba(255,255,255,0.3)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .contacts-row,.cars-grid,.pillars-row{grid-template-columns:1fr}
+  .hero-stats{display:none}
+  nav .nav-links{display:none}
+  .cars-intro{flex-direction:column}
+  .hero-title{font-size:clamp(56px,12vw,90px)}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="6" y="22" width="40" height="22" rx="3" fill="#FFFFFF"/>
+      <path d="M4 24 L26 8 L48 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="13" y="28" width="10" height="10" rx="1.5" fill="#2563EB"/>
+      <rect x="29" y="28" width="10" height="10" rx="1.5" fill="#2563EB"/>
+    </svg>
+    <span class="nav-logo-text">White<span>Garage</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Послуги</a></li>
+    <li><a href="#cars">Авто з США</a></li>
+    <li><a href="#contacts">Контакти</a></li>
+  </ul>
+  <a href="tel:+380XXXXXXXXX" class="nav-cta">Зателефонувати</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-accent"></div>
+
+  <p class="hero-label">Білогородка · СТО · Шиномонтаж · США</p>
+  <h1 class="hero-title">White<br/><span>Garage</span></h1>
+  <p class="hero-sub">Ремонт, обслуговування і доставка авто зі Штатів. Надійно. Експертно. По-людськи.</p>
+  <div class="hero-actions">
+    <a href="#services" class="btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+      Наші послуги
+    </a>
+    <a href="#cars" class="btn-secondary">
+      Авто з США →
+    </a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">20<span>+</span></div>
+      <div class="stat-label">Років досвіду</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">500<span>+</span></div>
+      <div class="stat-label">Авто привезено</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100<span>%</span></div>
+      <div class="stat-label">Прозора діагностика</div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Гарантія на роботи
+  </div>
+  <div class="trust-item">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Прозора ціна до початку
+  </div>
+  <div class="trust-item">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+    Досвід з авто зі США
+  </div>
+  <div class="trust-item">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    Білогородка, поруч із Києвом
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+  <div class="services-top">
+    <div>
+      <p class="section-label">Що ми робимо</p>
+      <h2 class="section-title">Послуги</h2>
+    </div>
+    <p class="section-sub">Повний цикл обслуговування вашого авто — від діагностики до шин. Один сервіс для всього.</p>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <div class="service-name">Авторемонт / СТО</div>
+      <div class="service-desc">Діагностика і ремонт будь-якої складності. Знаємо особливості американських авто.</div>
+      <ul class="service-items">
+        <li>Комп'ютерна діагностика</li>
+        <li>Ремонт двигуна і трансмісії</li>
+        <li>Гальмівна система</li>
+        <li>Підвіска і рульове</li>
+        <li>Технічне обслуговування (ТО)</li>
+      </ul>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+      </div>
+      <div class="service-name">Шиномонтаж</div>
+      <div class="service-desc">Заміна, балансування і зберігання шин. Швидко, без черг.</div>
+      <ul class="service-items">
+        <li>Заміна і перебортовка шин</li>
+        <li>Комп'ютерне балансування</li>
+        <li>Ремонт проколів</li>
+        <li>Сезонне зберігання коліс</li>
+        <li>Перевірка тиску TPMS</li>
+      </ul>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+      </div>
+      <div class="service-name">Доставка авто з США</div>
+      <div class="service-desc">Підбір, аукціон, доставка і розмитнення. Від вибору до ключів у руці.</div>
+      <ul class="service-items">
+        <li>Підбір авто під ваш бюджет</li>
+        <li>Участь в аукціонах Copart / IAAI</li>
+        <li>Морська доставка до України</li>
+        <li>Допомога з розмитненням</li>
+        <li>Перевірка і підготовка до їзди</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CONTACTS ROW -->
+  <div class="contacts-row" id="contacts">
+    <div class="contact-card">
+      <h3>Контакти</h3>
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.69A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        </div>
+        <div class="contact-text">
+          <strong>Телефон</strong>
+          <a href="tel:+380XXXXXXXXX" class="phone-big">+380 XX XXX XX XX</a>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="contact-text">
+          <strong>Графік роботи</strong>
+          Пн–Пт: 8:00–19:00<br/>Сб: 9:00–16:00 · Нд: вихідний
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div class="contact-text">
+          <strong>Адреса</strong>
+          Білогородка, вул. [Назва вулиці]<br/>10 хв від Києва по Житомирській трасі
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-card">
+      <h3>Як нас знайти</h3>
+      <div class="map-placeholder">
+        <div class="map-pin"></div>
+        <p class="map-address">WhiteGarage · Білогородка</p>
+        <a href="https://maps.google.com" target="_blank" class="map-link">Відкрити в Google Maps →</a>
+      </div>
+      <p style="font-size:13px;color:var(--steel);margin-top:1rem;line-height:1.6">Зручна парковка для клієнтів. Поруч автобусна зупинка. 10 хвилин від Київської кільцевої.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CARS FROM USA -->
+<section class="cars-section" id="cars">
+  <div class="cars-intro">
+    <div>
+      <p class="section-label">Підбір і доставка</p>
+      <h2 class="section-title" style="color:var(--white)">Авто зі США</h2>
+      <p class="section-sub">Допомагаємо знайти і привезти авто під ваш бюджет і потреби. Без зайвих посередників.</p>
+    </div>
+    <div class="exp-badge">
+      <div class="exp-num">20+</div>
+      <div class="exp-label">Років досвіду<br/>в підборі авто</div>
+    </div>
+  </div>
+
+  <div class="cars-grid">
+    <!-- Available car 1 -->
+    <div class="car-card">
+      <div class="car-svg-wrapper car-img-1">
+        <svg viewBox="0 0 200 100" fill="none" xmlns="http://www.w3.org/2000/svg" width="180">
+          <rect x="10" y="50" width="180" height="35" rx="5" fill="#1E3A6E"/>
+          <path d="M20 50 C25 25 45 20 80 18 L130 18 C160 18 175 30 185 50 Z" fill="#2A4A80"/>
+          <rect x="35" y="22" width="55" height="25" rx="3" fill="rgba(150,200,255,0.2)" stroke="rgba(150,200,255,0.4)" stroke-width="1"/>
+          <rect x="98" y="22" width="55" height="25" rx="3" fill="rgba(150,200,255,0.2)" stroke="rgba(150,200,255,0.4)" stroke-width="1"/>
+          <circle cx="45" cy="85" r="12" fill="#111" stroke="#333" stroke-width="2"/>
+          <circle cx="45" cy="85" r="5" fill="#444"/>
+          <circle cx="155" cy="85" r="12" fill="#111" stroke="#333" stroke-width="2"/>
+          <circle cx="155" cy="85" r="5" fill="#444"/>
+          <rect x="5" y="58" width="15" height="6" rx="2" fill="#FFD700" opacity=".7"/>
+          <rect x="180" y="58" width="15" height="6" rx="2" fill="#FF4444" opacity=".7"/>
+        </svg>
+      </div>
+      <div class="car-overlay"></div>
+      <span class="car-badge badge-available">В наявності</span>
+      <div class="car-label">
+        <div class="car-name">Ford Mustang GT 2019</div>
+        <div class="car-meta">5.0L V8 · Пробіг 62 000 км</div>
+      </div>
+    </div>
+
+    <!-- Available car 2 -->
+    <div class="car-card">
+      <div class="car-svg-wrapper car-img-2">
+        <svg viewBox="0 0 200 100" fill="none" xmlns="http://www.w3.org/2000/svg" width="180">
+          <rect x="8" y="52" width="184" height="33" rx="4" fill="#1a2535"/>
+          <path d="M18 52 C22 32 42 26 75 24 L135 24 C165 24 178 36 188 52 Z" fill="#253347"/>
+          <rect x="30" y="28" width="60" height="22" rx="2" fill="rgba(180,220,255,0.15)" stroke="rgba(180,220,255,0.35)" stroke-width="1"/>
+          <rect x="100" y="28" width="60" height="22" rx="2" fill="rgba(180,220,255,0.15)" stroke="rgba(180,220,255,0.35)" stroke-width="1"/>
+          <circle cx="42" cy="85" r="13" fill="#0d0d0d" stroke="#2a2a2a" stroke-width="2"/>
+          <circle cx="42" cy="85" r="5" fill="#3a3a3a"/>
+          <circle cx="158" cy="85" r="13" fill="#0d0d0d" stroke="#2a2a2a" stroke-width="2"/>
+          <circle cx="158" cy="85" r="5" fill="#3a3a3a"/>
+          <rect x="3" y="60" width="14" height="5" rx="2" fill="#FFF5B0" opacity=".8"/>
+          <rect x="183" y="60" width="14" height="5" rx="2" fill="#FF6666" opacity=".6"/>
+          <path d="M75 24 L80 52" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+          <path d="M135 24 L130 52" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div class="car-overlay"></div>
+      <span class="car-badge badge-available">В наявності</span>
+      <div class="car-label">
+        <div class="car-name">Chevrolet Tahoe 2020</div>
+        <div class="car-meta">5.3L V8 · 7 місць · Повний привід</div>
+      </div>
+    </div>
+
+    <!-- In transit 1 -->
+    <div class="car-card">
+      <div class="car-svg-wrapper car-img-3">
+        <!-- Ship at sea illustration -->
+        <svg viewBox="0 0 200 110" fill="none" xmlns="http://www.w3.org/2000/svg" width="180">
+          <rect x="0" y="60" width="200" height="50" fill="#0d2137"/>
+          <path d="M0 60 Q50 50 100 60 Q150 70 200 60" fill="none" stroke="rgba(100,160,220,0.3)" stroke-width="1"/>
+          <path d="M0 70 Q50 60 100 70 Q150 80 200 70" fill="none" stroke="rgba(100,160,220,0.2)" stroke-width="1"/>
+          <rect x="40" y="38" width="120" height="28" rx="4" fill="#1E3A5F"/>
+          <rect x="55" y="20" width="80" height="20" rx="3" fill="#253F6A"/>
+          <rect x="70" y="8" width="16" height="14" rx="2" fill="#2563EB"/>
+          <rect x="52" y="25" width="18" height="12" rx="1" fill="rgba(150,200,255,0.2)" stroke="rgba(150,200,255,0.3)" stroke-width=".5"/>
+          <rect x="75" y="25" width="18" height="12" rx="1" fill="rgba(150,200,255,0.2)" stroke="rgba(150,200,255,0.3)" stroke-width=".5"/>
+          <rect x="98" y="25" width="18" height="12" rx="1" fill="rgba(150,200,255,0.2)" stroke="rgba(150,200,255,0.3)" stroke-width=".5"/>
+          <path d="M25 66 L175 66" stroke="#1E3A5F" stroke-width="3" stroke-linecap="round"/>
+          <path d="M15 70 C60 55 140 55 185 70" fill="#152a42" stroke="#1a3352" stroke-width="1"/>
+          <circle cx="30" cy="15" r="3" fill="#FFD700" opacity=".6"/>
+          <circle cx="170" cy="20" r="2" fill="#FFD700" opacity=".4"/>
+          <circle cx="150" cy="10" r="2" fill="white" opacity=".3"/>
+        </svg>
+      </div>
+      <div class="car-overlay"></div>
+      <span class="car-badge badge-transit">В дорозі</span>
+      <div class="car-label">
+        <div class="car-name">Dodge Challenger R/T 2021</div>
+        <div class="car-meta">Очікується через 3 тижні · USA → UA</div>
+      </div>
+    </div>
+
+    <!-- In transit 2 -->
+    <div class="car-card">
+      <div class="car-svg-wrapper car-img-4">
+        <svg viewBox="0 0 200 110" fill="none" xmlns="http://www.w3.org/2000/svg" width="180">
+          <!-- Ocean at night -->
+          <rect x="0" y="55" width="200" height="55" fill="#0a1828"/>
+          <path d="M0 55 Q30 48 60 55 Q90 62 120 55 Q150 48 180 55 Q195 58 200 55" fill="none" stroke="rgba(37,99,235,0.25)" stroke-width="1.5"/>
+          <path d="M0 65 Q40 58 80 65 Q120 72 160 65 Q185 61 200 65" fill="none" stroke="rgba(37,99,235,0.15)" stroke-width="1"/>
+          <!-- Container ship -->
+          <rect x="30" y="35" width="140" height="25" rx="3" fill="#152338"/>
+          <rect x="40" y="20" width="100" height="18" rx="2" fill="#1a2e47"/>
+          <rect x="85" y="8" width="12" height="14" rx="2" fill="#1E3A5F"/>
+          <!-- containers -->
+          <rect x="45" y="23" width="20" height="13" rx="1" fill="#2563EB" opacity=".7"/>
+          <rect x="68" y="23" width="20" height="13" rx="1" fill="#64748B" opacity=".8"/>
+          <rect x="91" y="23" width="20" height="13" rx="1" fill="#2563EB" opacity=".5"/>
+          <rect x="114" y="23" width="20" height="13" rx="1" fill="#374151" opacity=".9"/>
+          <!-- hull -->
+          <path d="M25 60 L175 60 L185 70 L15 70 Z" fill="#0f1e30"/>
+          <!-- stars -->
+          <circle cx="20" cy="12" r="1" fill="white" opacity=".5"/>
+          <circle cx="160" cy="8" r="1.5" fill="white" opacity=".4"/>
+          <circle cx="180" cy="18" r="1" fill="white" opacity=".3"/>
+          <circle cx="50" cy="5" r="1" fill="white" opacity=".4"/>
+          <!-- moon reflection -->
+          <path d="M90 55 Q100 50 110 55" stroke="rgba(200,220,255,0.2)" stroke-width="1" fill="none"/>
+        </svg>
+      </div>
+      <div class="car-overlay"></div>
+      <span class="car-badge badge-transit">В дорозі</span>
+      <div class="car-label">
+        <div class="car-name">Jeep Grand Cherokee 2022</div>
+        <div class="car-meta">Очікується через 5 тижнів · Copart Baltimore</div>
+      </div>
+    </div>
+
+    <!-- Info card -->
+    <div class="car-card" style="aspect-ratio:auto;min-height:200px;background:rgba(37,99,235,0.08);border:0.5px solid rgba(37,99,235,0.2);display:flex;flex-direction:column;justify-content:center;padding:2rem">
+      <div style="font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,0.4);margin-bottom:.75rem">Чому обирають нас</div>
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <span style="color:var(--blue);font-size:18px;line-height:1">✦</span>
+          <span style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.5">Перевіряємо авто за VIN-звітами і фото з аукціону до покупки</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <span style="color:var(--blue);font-size:18px;line-height:1">✦</span>
+          <span style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.5">Прозорий розрахунок: митниця, доставка, ремонт — все одразу</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <span style="color:var(--blue);font-size:18px;line-height:1">✦</span>
+          <span style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.5">Після доставки готуємо авто до дороги у своєму СТО</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PILLARS -->
+  <div class="pillars-row">
+    <div class="pillar-card">
+      <div class="pillar-icon-wrap">🔧</div>
+      <div class="pillar-title">Надійно</div>
+      <div class="pillar-desc">Усі роботи з гарантією. Чесна ціна без прихованих доплат. Розповідаємо що і чому.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon-wrap">🎯</div>
+      <div class="pillar-title">Експертно</div>
+      <div class="pillar-desc">20 років у підборі авто зі Штатів. Знаємо що дивитись і що питати на аукціоні.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon-wrap">🤝</div>
+      <div class="pillar-title">Дружньо</div>
+      <div class="pillar-desc">Пояснюємо зрозуміло, не поспішаємо. До нас повертаються — і рекомендують.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:#060a14;border-top:0.5px solid var(--border);padding:2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+  <div style="display:flex;align-items:center;gap:10px">
+    <svg width="24" height="24" viewBox="0 0 52 52" fill="none">
+      <rect x="6" y="22" width="40" height="22" rx="3" fill="#FFFFFF"/>
+      <path d="M4 24 L26 8 L48 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="13" y="28" width="10" height="10" rx="1.5" fill="#2563EB"/>
+      <rect x="29" y="28" width="10" height="10" rx="1.5" fill="#2563EB"/>
+    </svg>
+    <span style="font-size:16px;font-weight:600;color:var(--white)">White<span style="color:var(--blue)">Garage</span></span>
+  </div>
+  <span style="font-size:13px;color:rgba(255,255,255,0.25)">Білогородка · Авторемонт · Шиномонтаж · Авто з США</span>
+</footer>
+
+</body>
+</html>
