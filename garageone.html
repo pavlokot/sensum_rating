@@ -1,156 +1,983 @@
-import React from "react";
-import { ArrowRight, Car, Wrench, CircleGauge, ShieldCheck, Truck, Settings, Phone, CheckCircle2 } from "lucide-react";
-import { motion } from "framer-motion";
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Garage One — авто під ключ</title>
+  <style>
+    :root {
+      --bg: #0f1113;
+      --bg-2: #15181b;
+      --card: #1b2024;
+      --card-2: #23282d;
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.66);
+      --line: rgba(255,255,255,0.1);
+      --orange: #ff8a00;
+      --orange-2: #ff9d2b;
+      --light: #f4f4f2;
+      --dark-text: #111315;
+      --radius: 28px;
+    }
 
-const services = [
-  {
-    icon: Truck,
-    title: "Доставка авто",
-    text: "Супроводжуємо процес доставки, допомагаємо з логістикою, перевіркою та підготовкою авто до передачі клієнту.",
-  },
-  {
-    icon: Wrench,
-    title: "Ремонт і ТО",
-    text: "Діагностика, ремонт ходової, гальмівної системи, двигуна, електрики та планове обслуговування.",
-  },
-  {
-    icon: CircleGauge,
-    title: "Шиномонтаж",
-    text: "Сезонна заміна шин, балансування, ремонт пошкоджень, перевірка тиску та стану гуми.",
-  },
-  {
-    icon: Settings,
-    title: "Підготовка авто",
-    text: "Після доставки перевіряємо авто, міняємо рідини, усуваємо технічні питання й готуємо машину до дороги.",
-  },
-];
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-const steps = [
-  "Залишаєте заявку",
-  "Уточнюємо задачу та дані авто",
-  "Розраховуємо вартість і строки",
-  "Погоджуємо план робіт",
-  "Виконуємо доставку, ремонт або сервіс",
-  "Передаємо готове авто",
-];
+    html {
+      scroll-behavior: smooth;
+    }
 
-const cases = [
-  {
-    car: "Volkswagen Tiguan",
-    job: "Доставка, діагностика, заміна рідин, ремонт ходової та шиномонтаж.",
-  },
-  {
-    car: "Toyota Camry",
-    job: "Повне ТО після покупки, перевірка гальмівної системи та підбір шин.",
-  },
-  {
-    car: "BMW X5",
-    job: "Діагностика після доставки, ремонт підвіски та сезонна заміна гуми.",
-  },
-];
+    body {
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
 
-function Logo() {
-  return (
-    <div className="flex items-center gap-4">
-      <div className="relative flex h-14 w-16 items-center justify-center rounded-2xl border border-orange-400/40 bg-[#15191d] shadow-[0_0_30px_rgba(255,138,0,0.15)]">
-        <div className="absolute -top-2 left-3 h-8 w-10 rotate-45 rounded-tl-md border-l border-t border-orange-400/60" />
-        <div className="text-3xl font-black tracking-tighter text-white">
-          G<span className="text-[#ff8a00]">1</span>
-        </div>
-      </div>
-      <div className="leading-none">
-        <div className="text-xl font-black tracking-[0.18em] text-white">GARAGE</div>
-        <div className="text-xl font-black tracking-[0.28em] text-[#ff8a00]">ONE</div>
-      </div>
-    </div>
-  );
-}
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-function Button({ children, variant = "primary" }) {
-  const base = "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition";
-  const styles =
-    variant === "primary"
-      ? "bg-[#ff8a00] text-black hover:bg-[#ff9d2b]"
-      : "border border-white/20 bg-white/5 text-white hover:bg-white/10";
-  return <button className={`${base} ${styles}`}>{children}</button>;
-}
+    .container {
+      width: min(1240px, calc(100% - 40px));
+      margin: 0 auto;
+    }
 
-export default function GarageOneLanding() {
-  return (
-    <main className="min-h-screen bg-[#0f1113] text-white">
-      <section className="relative overflow-hidden border-b border-white/10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(255,138,0,0.20),transparent_32%),radial-gradient(circle_at_20%_60%,rgba(255,255,255,0.08),transparent_30%)]" />
-        <div className="absolute right-0 top-28 h-96 w-96 rounded-full bg-[#ff8a00]/10 blur-3xl" />
-        <div className="relative mx-auto max-w-7xl px-5 py-6 sm:px-8">
-          <header className="flex items-center justify-between gap-6">
-            <Logo />
-            <nav className="hidden items-center gap-8 text-sm text-white/70 md:flex">
-              <a href="#services" className="hover:text-white">Послуги</a>
-              <a href="#process" className="hover:text-white">Як працюємо</a>
-              <a href="#cases" className="hover:text-white">Кейси</a>
-              <a href="#contact" className="hover:text-white">Контакти</a>
-            </nav>
-            <a href="tel:+380000000000" className="hidden items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/80 md:flex">
-              <Phone size={16} /> +38 000 000 00 00
-            </a>
-          </header>
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      min-height: 100vh;
+    }
 
-          <div className="grid min-h-[720px] items-center gap-12 py-20 lg:grid-cols-[1.05fr_0.95fr]">
-            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <div className="mb-6 inline-flex rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-2 text-sm font-medium text-orange-200">
-                Доставка • ремонт • шиномонтаж • сервіс
-              </div>
-              <h1 className="max-w-4xl text-5xl font-black leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
-                Garage One — авто під ключ
-              </h1>
-              <p className="mt-7 max-w-2xl text-lg leading-8 text-white/72 sm:text-xl">
-                Доставка, ремонт, шиномонтаж і сервіс авто в одному місці. Беремо на себе весь процес — від першої консультації до готової машини на дорозі.
-              </p>
-              <p className="mt-5 text-xl font-semibold text-white">
-                Без зайвих посередників. Зрозуміло. Поетапно. Під контролем.
-              </p>
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <Button>Отримати консультацію <ArrowRight size={18} /></Button>
-                <Button variant="secondary">Розрахувати вартість</Button>
-              </div>
-            </motion.div>
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 74% 20%, rgba(255, 138, 0, 0.2), transparent 30%),
+        radial-gradient(circle at 20% 58%, rgba(255,255,255,0.08), transparent 28%);
+      pointer-events: none;
+    }
 
-            <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.1 }} className="relative">
-              <div className="relative rounded-[2rem] border border-white/10 bg-white/[0.04] p-4 shadow-2xl backdrop-blur">
-                <div className="rounded-[1.5rem] bg-gradient-to-br from-[#252a2e] to-[#111315] p-6">
-                  <div className="flex h-[420px] flex-col justify-between overflow-hidden rounded-[1.25rem] border border-white/10 bg-[#171b1f] p-6">
-                    <div className="flex justify-between">
-                      <div>
-                        <p className="text-sm text-white/50">Auto service center</p>
-                        <p className="mt-1 text-2xl font-black">Ready for road</p>
-                      </div>
-                      <Car className="text-[#ff8a00]" size={38} />
-                    </div>
-                    <div className="relative mx-auto h-44 w-full max-w-md">
-                      <div className="absolute bottom-4 left-1/2 h-28 w-[85%] -translate-x-1/2 rounded-t-[4rem] border-4 border-white/15" />
-                      <div className="absolute bottom-6 left-1/2 h-20 w-[72%] -translate-x-1/2 rounded-[2rem] bg-[#23282d] shadow-[0_20px_70px_rgba(0,0,0,0.45)]" />
-                      <div className="absolute bottom-16 left-[23%] h-10 w-[54%] rounded-t-[2rem] bg-[#30363b]" />
-                      <div className="absolute bottom-2 left-[21%] h-14 w-14 rounded-full border-[10px] border-[#0f1113] bg-[#ff8a00]" />
-                      <div className="absolute bottom-2 right-[21%] h-14 w-14 rounded-full border-[10px] border-[#0f1113] bg-[#ff8a00]" />
-                      <div className="absolute bottom-0 left-0 h-2 w-full rounded-full bg-[#ff8a00]" />
-                    </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      {["Delivery", "Repair", "Tires"].map((item) => (
-                        <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center text-sm font-semibold text-white/75">
-                          {item}
-                        </div>
-                      ))}
-                    </div>
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -120px;
+      top: 180px;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: rgba(255, 138, 0, 0.10);
+      filter: blur(70px);
+      pointer-events: none;
+    }
+
+    header {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 24px 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-mark {
+      position: relative;
+      width: 68px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,138,0,0.42);
+      border-radius: 18px;
+      background: #15191d;
+      box-shadow: 0 0 28px rgba(255,138,0,0.16);
+      overflow: visible;
+    }
+
+    .logo-roof {
+      position: absolute;
+      top: -8px;
+      left: 16px;
+      width: 42px;
+      height: 42px;
+      border-top: 1px solid rgba(255,138,0,0.7);
+      border-left: 1px solid rgba(255,138,0,0.7);
+      transform: rotate(45deg);
+      border-radius: 4px 0 0 0;
+    }
+
+    .logo-g1 {
+      position: relative;
+      z-index: 1;
+      font-size: 32px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -0.08em;
+    }
+
+    .logo-g1 span {
+      color: var(--orange);
+      letter-spacing: -0.04em;
+    }
+
+    .logo-text {
+      line-height: 0.9;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      font-size: 20px;
+    }
+
+    .logo-text .one {
+      display: block;
+      color: var(--orange);
+      letter-spacing: 0.28em;
+      margin-top: 7px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+    }
+
+    .nav a:hover {
+      color: #fff;
+    }
+
+    .phone {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 999px;
+      color: rgba(255,255,255,0.82);
+      font-size: 14px;
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 70px;
+      align-items: center;
+      min-height: calc(100vh - 110px);
+      padding: 70px 0 100px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 9px 16px;
+      border: 1px solid rgba(255,138,0,0.32);
+      border-radius: 999px;
+      background: rgba(255,138,0,0.10);
+      color: #ffd9ad;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 26px;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(46px, 7vw, 86px);
+      line-height: 0.96;
+      letter-spacing: -0.06em;
+      font-weight: 950;
+    }
+
+    .hero-text {
+      margin-top: 28px;
+      max-width: 720px;
+      font-size: 20px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.72);
+    }
+
+    .hero-accent {
+      margin-top: 18px;
+      font-size: 21px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 36px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 50px;
+      padding: 14px 24px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: #101010;
+    }
+
+    .btn-primary:hover {
+      background: var(--orange-2);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.10);
+      transform: translateY(-1px);
+    }
+
+    .visual-card {
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 34px;
+      background: rgba(255,255,255,0.04);
+      padding: 16px;
+      box-shadow: 0 30px 90px rgba(0,0,0,0.36);
+      backdrop-filter: blur(10px);
+    }
+
+    .visual-inner {
+      min-height: 460px;
+      border-radius: 26px;
+      padding: 28px;
+      background: linear-gradient(145deg, #252a2e, #111315);
+      overflow: hidden;
+    }
+
+    .garage-illustration {
+      height: 420px;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 22px;
+      background: #171b1f;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .visual-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .visual-top p:first-child {
+      color: rgba(255,255,255,0.48);
+      font-size: 14px;
+    }
+
+    .visual-top p:last-child {
+      margin-top: 2px;
+      font-size: 27px;
+      font-weight: 900;
+    }
+
+    .car-icon {
+      color: var(--orange);
+      font-size: 42px;
+    }
+
+    .car-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      height: 190px;
+      margin: 20px auto;
+    }
+
+    .garage-arch {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      width: 85%;
+      height: 128px;
+      transform: translateX(-50%);
+      border: 5px solid rgba(255,255,255,0.14);
+      border-bottom: 0;
+      border-radius: 100px 100px 0 0;
+    }
+
+    .car-body {
+      position: absolute;
+      bottom: 34px;
+      left: 50%;
+      width: 74%;
+      height: 84px;
+      transform: translateX(-50%);
+      border-radius: 34px 34px 18px 18px;
+      background: #252b30;
+      box-shadow: 0 22px 60px rgba(0,0,0,0.45);
+    }
+
+    .car-window {
+      position: absolute;
+      bottom: 95px;
+      left: 24%;
+      width: 52%;
+      height: 45px;
+      border-radius: 40px 40px 4px 4px;
+      background: #30363b;
+    }
+
+    .wheel {
+      position: absolute;
+      bottom: 0;
+      width: 58px;
+      height: 58px;
+      border: 11px solid #0f1113;
+      border-radius: 50%;
+      background: var(--orange);
+    }
+
+    .wheel.left { left: 22%; }
+    .wheel.right { right: 22%; }
+
+    .road-line {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--orange);
+    }
+
+    .visual-tags {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .visual-tags div {
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.75);
+      text-align: center;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    section {
+      padding: 96px 0;
+    }
+
+    .section-label {
+      margin-bottom: 12px;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    h2 {
+      max-width: 820px;
+      font-size: clamp(36px, 4vw, 56px);
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+      font-weight: 950;
+    }
+
+    .section-intro {
+      max-width: 760px;
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.75;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-top: 52px;
+    }
+
+    .service-card,
+    .step-card {
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      padding: 26px;
+      transition: 0.2s ease;
+    }
+
+    .service-card:hover,
+    .step-card:hover {
+      border-color: rgba(255,138,0,0.42);
+      background: rgba(255,255,255,0.06);
+      transform: translateY(-2px);
+    }
+
+    .service-icon {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      border-radius: 18px;
+      background: var(--orange);
+      color: #111;
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .service-card h3,
+    .case-card h3 {
+      font-size: 21px;
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+
+    .service-card p,
+    .case-card p {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .benefits {
+      background: var(--bg-2);
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 70px;
+      align-items: start;
+    }
+
+    .benefit-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .benefit-item {
+      display: flex;
+      gap: 12px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 20px;
+      background: rgba(0,0,0,0.20);
+      color: rgba(255,255,255,0.84);
+      font-weight: 750;
+    }
+
+    .check {
+      color: var(--orange);
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 52px;
+    }
+
+    .step-number {
+      margin-bottom: 34px;
+      color: var(--orange);
+      font-size: 52px;
+      line-height: 1;
+      font-weight: 950;
+      letter-spacing: -0.06em;
+    }
+
+    .step-card p {
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .cases {
+      background: var(--light);
+      color: var(--dark-text);
+    }
+
+    .cases .section-label {
+      color: #d87000;
+    }
+
+    .cases .section-intro {
+      color: rgba(0,0,0,0.62);
+    }
+
+    .cases-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 30px;
+      margin-bottom: 52px;
+    }
+
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .case-card {
+      overflow: hidden;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.06);
+    }
+
+    .case-image {
+      height: 180px;
+      background: linear-gradient(135deg, #1b2024, #2d3338 58%, #ff8a00);
+    }
+
+    .case-card-content {
+      padding: 26px;
+    }
+
+    .case-card p {
+      color: rgba(0,0,0,0.62);
+    }
+
+    .contact {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 76% 60%, rgba(255,138,0,0.16), transparent 32%);
+      pointer-events: none;
+    }
+
+    .contact-box {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 0.9fr;
+      gap: 50px;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 34px;
+      background: rgba(255,255,255,0.04);
+      padding: 42px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 80px;
+    }
+
+    .chip {
+      padding: 9px 15px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      color: rgba(255,255,255,0.58);
+      font-size: 14px;
+    }
+
+    form {
+      padding: 22px;
+      border-radius: 26px;
+      background: #111315;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.32);
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      margin-bottom: 14px;
+      padding: 16px 18px;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      color: #fff;
+      font: inherit;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: rgba(255,255,255,0.36);
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--orange);
+    }
+
+    form .btn {
+      width: 100%;
+      margin-top: 2px;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.10);
+      padding: 34px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      color: rgba(255,255,255,0.46);
+      font-size: 14px;
+    }
+
+    @media (max-width: 1050px) {
+      .hero-grid,
+      .benefits-grid,
+      .contact-box {
+        grid-template-columns: 1fr;
+      }
+
+      .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero-grid {
+        gap: 40px;
+        padding-top: 56px;
+      }
+
+      .visual-card {
+        max-width: 720px;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .nav,
+      .phone {
+        display: none;
+      }
+
+      .container {
+        width: min(100% - 28px, 1240px);
+      }
+
+      header {
+        padding: 18px 0;
+      }
+
+      .logo-mark {
+        width: 60px;
+        height: 52px;
+      }
+
+      .logo-text {
+        font-size: 17px;
+      }
+
+      .hero-grid {
+        min-height: auto;
+        padding: 48px 0 72px;
+      }
+
+      .hero-text {
+        font-size: 17px;
+      }
+
+      .hero-accent {
+        font-size: 18px;
+      }
+
+      .visual-inner,
+      .garage-illustration {
+        min-height: 380px;
+        height: auto;
+      }
+
+      .visual-tags,
+      .benefit-list,
+      .steps-grid,
+      .cases-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cases-head {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      section {
+        padding: 70px 0;
+      }
+
+      .contact-box {
+        padding: 22px;
+        border-radius: 26px;
+      }
+
+      .chips {
+        margin-top: 36px;
+      }
+
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="container">
+        <header>
+          <a href="#" class="logo" aria-label="Garage One">
+            <div class="logo-mark">
+              <div class="logo-roof"></div>
+              <div class="logo-g1">G<span>1</span></div>
+            </div>
+            <div class="logo-text">GARAGE<span class="one">ONE</span></div>
+          </a>
+
+          <nav class="nav">
+            <a href="#services">Послуги</a>
+            <a href="#process">Як працюємо</a>
+            <a href="#cases">Кейси</a>
+            <a href="#contact">Контакти</a>
+          </nav>
+
+          <a class="phone" href="tel:+380000000000">☎ +38 000 000 00 00</a>
+        </header>
+
+        <div class="hero-grid">
+          <div class="hero-content">
+            <div class="eyebrow">Доставка • ремонт • шиномонтаж • сервіс</div>
+            <h1>Garage One — авто під ключ</h1>
+            <p class="hero-text">Доставка, ремонт, шиномонтаж і сервіс авто в одному місці. Беремо на себе весь процес — від першої консультації до готової машини на дорозі.</p>
+            <p class="hero-accent">Без зайвих посередників. Зрозуміло. Поетапно. Під контролем.</p>
+            <div class="buttons">
+              <a class="btn btn-primary" href="#contact">Отримати консультацію →</a>
+              <a class="btn btn-secondary" href="#services">Розрахувати вартість</a>
+            </div>
+          </div>
+
+          <div class="visual-card">
+            <div class="visual-inner">
+              <div class="garage-illustration">
+                <div class="visual-top">
+                  <div>
+                    <p>Auto service center</p>
+                    <p>Ready for road</p>
                   </div>
+                  <div class="car-icon">▰</div>
+                </div>
+
+                <div class="car-wrap">
+                  <div class="garage-arch"></div>
+                  <div class="car-body"></div>
+                  <div class="car-window"></div>
+                  <div class="wheel left"></div>
+                  <div class="wheel right"></div>
+                  <div class="road-line"></div>
+                </div>
+
+                <div class="visual-tags">
+                  <div>Delivery</div>
+                  <div>Repair</div>
+                  <div>Tires</div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="services" className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
-        <div className="mb-12 max-w-3xl">
-          <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#ff8a00]">Послуги</p>
-          <h2 className="text-4xl font-black tracking-tight sm:text-5xl">Повний цикл послуг для авто</h2>
-          <p className="mt-5 text-lg leading-8 text-white/
+    <section id="services">
+      <div class="container">
+        <p class="section-label">Послуги</p>
+        <h2>Повний цикл послуг для авто</h2>
+        <p class="section-intro">Garage One закриває ключові задачі власника авто в одному місці: від доставки та перевірки до ремонту, шиномонтажу й підготовки до експлуатації.</p>
+
+        <div class="services-grid">
+          <article class="service-card">
+            <div class="service-icon">↗</div>
+            <h3>Доставка авто</h3>
+            <p>Супроводжуємо процес доставки, допомагаємо з логістикою, перевіркою та підготовкою авто до передачі клієнту.</p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">⚙</div>
+            <h3>Ремонт і ТО</h3>
+            <p>Діагностика, ремонт ходової, гальмівної системи, двигуна, електрики та планове обслуговування.</p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">◉</div>
+            <h3>Шиномонтаж</h3>
+            <p>Сезонна заміна шин, балансування, ремонт пошкоджень, перевірка тиску та стану гуми.</p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">✓</div>
+            <h3>Підготовка авто</h3>
+            <p>Після доставки перевіряємо авто, міняємо рідини, усуваємо технічні питання й готуємо машину до дороги.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits">
+      <div class="container benefits-grid">
+        <div>
+          <p class="section-label">Переваги</p>
+          <h2>Менше хаосу. Більше контролю.</h2>
+          <p class="section-intro">Ми не просто виконуємо окремі роботи. Ми допомагаємо клієнту пройти весь процес зрозуміло: що з авто, що треба зробити, скільки це коштує і який результат буде на виході.</p>
+        </div>
+
+        <div class="benefit-list">
+          <div class="benefit-item"><span class="check">✓</span>Пояснюємо вартість до початку робіт</div>
+          <div class="benefit-item"><span class="check">✓</span>Узгоджуємо додаткові роботи</div>
+          <div class="benefit-item"><span class="check">✓</span>Даємо фото- та відеозвіт</div>
+          <div class="benefit-item"><span class="check">✓</span>Працюємо з авто після доставки</div>
+          <div class="benefit-item"><span class="check">✓</span>Допомагаємо зрозуміти реальний стан машини</div>
+          <div class="benefit-item"><span class="check">✓</span>Закриваємо доставку, ремонт і шиномонтаж</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="container">
+        <p class="section-label">Процес</p>
+        <h2>Від заявки до готового авто</h2>
+
+        <div class="steps-grid">
+          <div class="step-card"><div class="step-number">01</div><p>Залишаєте заявку</p></div>
+          <div class="step-card"><div class="step-number">02</div><p>Уточнюємо задачу та дані авто</p></div>
+          <div class="step-card"><div class="step-number">03</div><p>Розраховуємо вартість і строки</p></div>
+          <div class="step-card"><div class="step-number">04</div><p>Погоджуємо план робіт</p></div>
+          <div class="step-card"><div class="step-number">05</div><p>Виконуємо доставку, ремонт або сервіс</p></div>
+          <div class="step-card"><div class="step-number">06</div><p>Передаємо готове авто</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cases" class="cases">
+      <div class="container">
+        <div class="cases-head">
+          <div>
+            <p class="section-label">Кейси</p>
+            <h2>Авто, які ми підготували</h2>
+            <p class="section-intro">Тут можна показати реальні приклади робіт: фото до/після, перелік виконаних задач, строки та короткий результат для клієнта.</p>
+          </div>
+          <a class="btn btn-primary" href="#contact">Обговорити моє авто →</a>
+        </div>
+
+        <div class="cases-grid">
+          <article class="case-card">
+            <div class="case-image"></div>
+            <div class="case-card-content">
+              <h3>Volkswagen Tiguan</h3>
+              <p>Доставка, діагностика, заміна рідин, ремонт ходової та шиномонтаж.</p>
+            </div>
+          </article>
+
+          <article class="case-card">
+            <div class="case-image"></div>
+            <div class="case-card-content">
+              <h3>Toyota Camry</h3>
+              <p>Повне ТО після покупки, перевірка гальмівної системи та підбір шин.</p>
+            </div>
+          </article>
+
+          <article class="case-card">
+            <div class="case-image"></div>
+            <div class="case-card-content">
+              <h3>BMW X5</h3>
+              <p>Діагностика після доставки, ремонт підвіски та сезонна заміна гуми.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <div class="container contact-box">
+        <div>
+          <p class="section-label">Заявка</p>
+          <h2>Залиште заявку — підкажемо найкращий варіант</h2>
+          <p class="section-intro">Напишіть, яка послуга потрібна: доставка, ремонт, шиномонтаж або підготовка авто після покупки. Ми уточнимо деталі й запропонуємо наступний крок.</p>
+
+          <div class="chips">
+            <span class="chip">Garage One</span>
+            <span class="chip">Авто під ключ</span>
+            <span class="chip">Без зайвих посередників</span>
+          </div>
+        </div>
+
+        <form>
+          <input type="text" placeholder="Ім’я" />
+          <input type="tel" placeholder="Телефон" />
+          <input type="text" placeholder="Марка і модель авто" />
+          <textarea placeholder="Що потрібно зробити?"></textarea>
+          <button class="btn btn-primary" type="submit">Отримати консультацію</button>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container footer-inner">
+        <a href="#" class="logo" aria-label="Garage One">
+          <div class="logo-mark">
+            <div class="logo-roof"></div>
+            <div class="logo-g1">G<span>1</span></div>
+          </div>
+          <div class="logo-text">GARAGE<span class="one">ONE</span></div>
+        </a>
+        <p>© Garage One. Доставка, ремонт і сервіс авто в одному місці.</p>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
