@@ -1,306 +1,312 @@
-
-
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>День Києва — Українська асоціація девелоперів</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{background:#060e1a}
-.page{
-  font-family:'Manrope',sans-serif;
-  background:#060e1a;
-  width:100%;
-  position:relative;
-  overflow-x:hidden;
+html{scroll-behavior:auto}
+body{font-family:'Manrope',sans-serif;background:#060e1a;overflow-x:hidden}
+
+#starCanvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+
+.sticky-wrap{position:relative;height:3600px}
+.sticky-cv{
+  position:sticky;top:0;
+  width:100%;height:100vh;
+  pointer-events:none;z-index:2;overflow:hidden
 }
-/* sticky canvas for line */
-.sticky-wrap{
-  position:relative;
-  height:3200px;
+#lineCanvas{position:absolute;inset:0;width:100%;height:100%}
+#cityCanvas{
+  position:absolute;bottom:0;left:0;
+  width:100%;height:200px;
+  opacity:0;transition:opacity 1.6s ease
 }
-.sticky-canvas{
-  position:sticky;
-  top:0;
-  width:100%;
-  height:100vh;
-  min-height:600px;
-  pointer-events:none;
-  z-index:2;
-}
-#lineCanvas{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-}
+#cityCanvas.show{opacity:1}
 
 /* hero */
 .hero{
-  position:absolute;
-  top:0;left:0;right:0;
-  height:100vh;
-  min-height:600px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  padding-top:52px;
-  text-align:center;
-  z-index:1;
-  pointer-events:none;
+  position:absolute;top:0;left:0;right:0;
+  padding-top:52px;text-align:center;
+  z-index:1;pointer-events:none
 }
 .hero .tag{
   font-size:11px;font-weight:700;
   letter-spacing:.18em;text-transform:uppercase;
-  color:#8040B0;margin-bottom:10px;
+  color:#8040B0;margin-bottom:10px
 }
 .hero .title{
-  font-size:clamp(24px,4.5vw,48px);
-  font-weight:800;color:#fff;line-height:1.1;
+  font-size:clamp(28px,4.5vw,52px);
+  font-weight:800;color:#fff;line-height:1.1
 }
 .hero .title em{color:#8040B0;font-style:normal}
+.scroll-hint{
+  margin-top:22px;
+  display:flex;flex-direction:column;align-items:center;gap:7px;
+  opacity:.4
+}
+.scroll-hint span{
+  font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:#C4B8D4
+}
+.scroll-arrow{
+  width:1px;height:30px;
+  background:linear-gradient(#8040B0,transparent)
+}
 
-/* scroll nodes — absolutely inside sticky-wrap */
+/* stat nodes */
 .node{
-  position:absolute;
-  left:0;right:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  pointer-events:none;
-  z-index:3;
-  opacity:0;
-  transform:translateY(16px);
-  transition:opacity .5s ease, transform .5s ease;
+  position:absolute;left:0;right:0;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;z-index:3;
+  opacity:0;transform:translateY(18px);
+  transition:opacity .55s ease,transform .55s ease
 }
-.node.show{opacity:1;transform:translateY(0)}
-
-/* stat node */
-.stat-block{
-  text-align:center;
-}
+.node.show{opacity:1;transform:none}
+.stat-block{text-align:center}
 .stat-block .num{
-  font-size:clamp(48px,10vw,100px);
-  font-weight:800;
-  color:#fff;
-  line-height:1;
-  letter-spacing:-.02em;
+  font-size:clamp(60px,12vw,120px);
+  font-weight:800;color:#fff;
+  line-height:1;letter-spacing:-.025em
 }
 .stat-block .num b{color:#8040B0}
 .stat-block .lbl{
-  font-size:clamp(11px,1.8vw,15px);
-  font-weight:700;letter-spacing:.14em;
-  text-transform:uppercase;
-  color:#C4B8D4;margin-top:8px;
+  font-size:clamp(11px,1.5vw,14px);
+  font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;color:#C4B8D4;
+  margin-top:10px
 }
+.unit{font-size:.44em;color:#8040B0;font-weight:800}
 
-/* photo node */
-.photo-block{
+/* photo nodes */
+.photo-node{
+  position:absolute;left:0;right:0;
   display:flex;
-  align-items:center;
-  gap:24px;
-  max-width:520px;
-  padding:0 24px;
+  pointer-events:none;z-index:3;
+  opacity:0;transform:translateY(18px);
+  transition:opacity .55s ease,transform .55s ease;
+  padding:0 10%
 }
-.photo-block.right{flex-direction:row-reverse}
-.photo-frame{
-  flex:0 0 180px;
-  height:130px;
-  border-radius:2px;
-  overflow:hidden;
-  background:#1B2A4A;
-  border:1px solid rgba(128,64,176,.4);
+.photo-node.show{opacity:1;transform:none}
+.photo-node.right{justify-content:flex-end}
+.photo-card{display:flex;align-items:center;gap:26px;max-width:480px}
+.photo-card.rev{flex-direction:row-reverse}
+.photo-img{
+  flex:0 0 180px;height:130px;
+  border-radius:2px;overflow:hidden;
+  background:#0d1929;
+  border:1px solid rgba(128,64,176,.3);
   display:flex;align-items:center;justify-content:center;
+  color:rgba(128,64,176,.45);font-size:38px
 }
-.photo-frame img{width:100%;height:100%;object-fit:cover}
-.photo-frame .ph-icon{font-size:36px;color:rgba(128,64,176,.5)}
-.photo-text .tag{
-  font-size:10px;font-weight:700;letter-spacing:.14em;
-  text-transform:uppercase;color:#8040B0;margin-bottom:6px;
+.photo-img img{width:100%;height:100%;object-fit:cover}
+.ptag{
+  font-size:10px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:#8040B0;margin-bottom:7px
 }
-.photo-text .name{
-  font-size:clamp(15px,2.5vw,20px);font-weight:800;
-  color:#fff;line-height:1.2;margin-bottom:4px;
+.pname{
+  font-size:clamp(15px,2.2vw,20px);
+  font-weight:800;color:#fff;
+  line-height:1.2;margin-bottom:5px
 }
-.photo-text .dev{font-size:13px;color:#C4B8D4}
+.pdev{font-size:12px;color:#C4B8D4}
+.ptext-right{text-align:right}
 
-/* stars */
-#starCanvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
-
+/* footer */
 .footer{
   background:#060e1a;
-  padding:48px 24px 40px;
+  padding:56px 24px 48px;
   text-align:center;
   position:relative;z-index:5;
-  border-top:1px solid rgba(128,64,176,.2);
+  border-top:1px solid rgba(128,64,176,.12)
 }
-.footer .uad-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px}
-.footer .uad-name{font-size:15px;font-weight:700;color:#fff}
-.footer .members{
+.uad-row{
+  display:flex;align-items:center;justify-content:center;
+  gap:12px;margin-bottom:10px
+}
+.uad-name{font-size:16px;font-weight:700;color:#fff}
+.site{font-size:13px;color:#8040B0;margin-bottom:32px}
+.members{
   display:flex;flex-wrap:wrap;gap:8px;
-  justify-content:center;max-width:700px;margin:24px auto 0;
+  justify-content:center;max-width:740px;margin:0 auto
 }
-.member-pill{
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(128,64,176,.25);
+.mp{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(128,64,176,.18);
   color:#C4B8D4;font-size:12px;font-weight:600;
-  padding:6px 14px;border-radius:2px;
+  padding:7px 16px;border-radius:2px
 }
 </style>
+</head>
+<body>
 
-<div class="page" id="page">
-  <canvas id="starCanvas"></canvas>
+<canvas id="starCanvas"></canvas>
 
-  <div class="sticky-wrap" id="sWrap">
-    <div class="sticky-canvas">
-      <canvas id="lineCanvas"></canvas>
+<div class="sticky-wrap" id="sWrap">
+  <div class="sticky-cv">
+    <canvas id="lineCanvas"></canvas>
+    <canvas id="cityCanvas"></canvas>
+  </div>
+
+  <div class="hero">
+    <div class="tag">День Києва · 25 травня</div>
+    <div class="title">Ми будуємо<br><em>твоє місто</em></div>
+    <div class="scroll-hint">
+      <span>скролити</span>
+      <div class="scroll-arrow"></div>
     </div>
+  </div>
 
-    <div class="hero">
-      <div class="tag">День Києва · 25 травня</div>
-      <div class="title">Ми будуємо<br><em>твоє місто</em></div>
+  <div class="node" id="n0" style="top:560px">
+    <div class="stat-block">
+      <div class="num"><b id="c0">0</b></div>
+      <div class="lbl">членів асоціації</div>
     </div>
+  </div>
 
-    <!-- stat nodes — top values are scroll offsets within sticky-wrap -->
-    <div class="node" id="n0" style="top:680px">
-      <div class="stat-block">
-        <div class="num"><b id="c0">0</b></div>
-        <div class="lbl">членів асоціації</div>
+  <div class="node" id="n1" style="top:1020px">
+    <div class="stat-block">
+      <div class="num"><b id="c1">0</b><span class="unit"> млн м²</span></div>
+      <div class="lbl">збудованої площі в Києві</div>
+    </div>
+  </div>
+
+  <div class="photo-node" id="p0" style="top:1380px">
+    <div class="photo-card">
+      <div class="photo-img"><i class="ti ti-school" aria-hidden="true"></i></div>
+      <div>
+        <div class="ptag">Освіта · KAN Development</div>
+        <div class="pname">Школа A+</div>
+        <div class="pdev">Перша параметрична школа Києва</div>
       </div>
     </div>
+  </div>
 
-    <div class="node" id="n1" style="top:1100px">
-      <div class="stat-block">
-        <div class="num"><b id="c1">0</b><span style="font-size:.48em;color:#8040B0;font-weight:800"> млн м²</span></div>
-        <div class="lbl">збудованої площі в Києві</div>
+  <div class="node" id="n2" style="top:1720px">
+    <div class="stat-block">
+      <div class="num"><b id="c2">0</b><span class="unit">+ ЖК</span></div>
+      <div class="lbl">житлових комплексів</div>
+    </div>
+  </div>
+
+  <div class="photo-node right" id="p1" style="top:2080px">
+    <div class="photo-card rev">
+      <div class="photo-img"><i class="ti ti-building-bridge" aria-hidden="true"></i></div>
+      <div class="ptext-right">
+        <div class="ptag">Архітектура · KAN Development</div>
+        <div class="pname">Параметричний міст</div>
+        <div class="pdev">ЖК Файна Таун</div>
       </div>
     </div>
+  </div>
 
-    <div class="node photo-block" id="p0" style="top:1380px;justify-content:flex-start;padding-left:8%">
-      <div class="photo-frame">
-        <i class="ti ti-school ph-icon" aria-hidden="true"></i>
-      </div>
-      <div class="photo-text">
-        <div class="tag">Освіта · KAN</div>
-        <div class="name">Школа A+</div>
-        <div class="dev">Перша параметрична школа у Києві</div>
+  <div class="node" id="n3" style="top:2420px">
+    <div class="stat-block">
+      <div class="num"><b id="c3">0</b><span class="unit"> тис.</span></div>
+      <div class="lbl">киян живуть у наших будинках</div>
+    </div>
+  </div>
+
+  <div class="photo-node" id="p2" style="top:2760px">
+    <div class="photo-card">
+      <div class="photo-img"><i class="ti ti-building-skyscraper" aria-hidden="true"></i></div>
+      <div>
+        <div class="ptag">Нова архітектура · Ковальська</div>
+        <div class="pname">Crystal Park Tower</div>
+        <div class="pdev">Знаковий силует Києва</div>
       </div>
     </div>
+  </div>
 
-    <div class="node" id="n2" style="top:1700px">
-      <div class="stat-block">
-        <div class="num"><b id="c2">0</b><span style="font-size:.48em;color:#8040B0;font-weight:800">+</span></div>
-        <div class="lbl">житлових комплексів</div>
+  <div class="photo-node right" id="p3" style="top:3060px">
+    <div class="photo-card rev">
+      <div class="photo-img"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
+      <div class="ptext-right">
+        <div class="ptag">Громадський простір · UDP</div>
+        <div class="pname">Smart Plaza Obolon</div>
+        <div class="pdev">Новопечерські Липки</div>
       </div>
     </div>
+  </div>
 
-    <div class="node photo-block right" id="p1" style="top:1980px;justify-content:flex-end;padding-right:8%">
-      <div class="photo-frame">
-        <i class="ti ti-building-community ph-icon" aria-hidden="true"></i>
-      </div>
-      <div class="photo-text" style="text-align:right">
-        <div class="tag">Архітектура · KAN</div>
-        <div class="name">Параметричний міст</div>
-        <div class="dev">ЖК Файна Таун</div>
-      </div>
-    </div>
+</div><!-- /sticky-wrap -->
 
-    <div class="node" id="n3" style="top:2300px">
-      <div class="stat-block">
-        <div class="num"><b id="c3">0</b><span style="font-size:.48em;color:#8040B0;font-weight:800"> тис.</span></div>
-        <div class="lbl">киян живуть у наших будинках</div>
-      </div>
-    </div>
-
-    <div class="node photo-block" id="p2" style="top:2580px;justify-content:flex-start;padding-left:8%">
-      <div class="photo-frame">
-        <i class="ti ti-building ph-icon" aria-hidden="true"></i>
-      </div>
-      <div class="photo-text">
-        <div class="tag">Громадський простір · UDP</div>
-        <div class="name">Smart Plaza Obolon</div>
-        <div class="dev">Новопечерські Липки</div>
-      </div>
-    </div>
-
-    <div class="node photo-block right" id="p3" style="top:2860px;justify-content:flex-end;padding-right:8%">
-      <div class="photo-frame">
-        <i class="ti ti-tower ph-icon" aria-hidden="true"></i>
-      </div>
-      <div class="photo-text" style="text-align:right">
-        <div class="tag">Нова архітектура · Ковальська</div>
-        <div class="name">Crystal Park Tower</div>
-        <div class="dev">Знаковий силует Києва</div>
-      </div>
-    </div>
-
-  </div><!-- /sticky-wrap -->
-
-  <div class="footer">
-    <div class="uad-logo">
-      <svg width="30" height="30" viewBox="0 0 40 40" fill="none">
-        <rect x="11" y="2" width="14" height="14" rx="1" fill="#8040B0"/>
-        <rect x="3" y="14" width="20" height="22" rx="1" fill="#8040B0" opacity=".65"/>
-        <text x="18" y="13" text-anchor="middle" fill="#fff" font-size="8" font-weight="700" font-family="Manrope,sans-serif">А</text>
-        <text x="7" y="30" text-anchor="middle" fill="#fff" font-size="7" font-weight="700" font-family="Manrope,sans-serif">У</text>
-      </svg>
-      <span class="uad-name">Українська асоціація девелоперів</span>
-    </div>
-    <div style="color:#C4B8D4;font-size:13px">ua-developers.com.ua</div>
-    <div class="members">
-      <span class="member-pill">KAN Development</span><span class="member-pill">DIM</span>
-      <span class="member-pill">РІЕЛ</span><span class="member-pill">Stolitsa Group</span>
-      <span class="member-pill">Інтергал-Буд</span><span class="member-pill">IB Alliance</span>
-      <span class="member-pill">Saga Development</span><span class="member-pill">Ковальська</span>
-      <span class="member-pill">Креатор-буд</span><span class="member-pill">Perfect Group</span>
-      <span class="member-pill">Avalon</span><span class="member-pill">НЕСТ</span>
-      <span class="member-pill">Futura Hata</span><span class="member-pill">Bosphorus</span>
-      <span class="member-pill">GEOS</span><span class="member-pill">Royal House</span>
-      <span class="member-pill">BudCapital</span><span class="member-pill">UDP</span>
-      <span class="member-pill">ENSO</span><span class="member-pill">AVE NEW</span>
-      <span class="member-pill">АЗУЗ</span><span class="member-pill">Познякижилбуд</span>
-      <span class="member-pill">Taryan Group</span>
-    </div>
+<div class="footer" id="footer">
+  <div class="uad-row">
+    <svg width="30" height="30" viewBox="0 0 40 40" fill="none">
+      <rect x="11" y="2" width="14" height="14" rx="1" fill="#8040B0"/>
+      <rect x="3" y="14" width="20" height="22" rx="1" fill="#8040B0" opacity=".6"/>
+      <text x="18" y="13" text-anchor="middle" fill="#fff" font-size="8" font-weight="700" font-family="Manrope,sans-serif">А</text>
+      <text x="7" y="30" text-anchor="middle" fill="#fff" font-size="7" font-weight="700" font-family="Manrope,sans-serif">У</text>
+    </svg>
+    <span class="uad-name">Українська асоціація девелоперів</span>
+  </div>
+  <div class="site">ua-developers.com.ua</div>
+  <div class="members">
+    <span class="mp">KAN Development</span><span class="mp">DIM</span>
+    <span class="mp">РІЕЛ</span><span class="mp">Stolitsa Group</span>
+    <span class="mp">Інтергал-Буд</span><span class="mp">IB Alliance</span>
+    <span class="mp">Saga Development</span><span class="mp">Ковальська</span>
+    <span class="mp">Креатор-буд</span><span class="mp">Perfect Group</span>
+    <span class="mp">Avalon</span><span class="mp">НЕСТ</span>
+    <span class="mp">Futura Hata</span><span class="mp">Bosphorus</span>
+    <span class="mp">GEOS</span><span class="mp">Royal House</span>
+    <span class="mp">BudCapital</span><span class="mp">UDP</span>
+    <span class="mp">ENSO</span><span class="mp">AVE NEW</span>
+    <span class="mp">АЗУЗ</span><span class="mp">Познякижилбуд</span>
+    <span class="mp">Taryan Group</span>
   </div>
 </div>
 
 <script>
-const page = document.getElementById('page');
-const sWrap = document.getElementById('sWrap');
-const lineCV = document.getElementById('lineCanvas');
-const starCV = document.getElementById('starCanvas');
-const lctx = lineCV.getContext('2d');
-const sctx = starCV.getContext('2d');
+const sWrap   = document.getElementById('sWrap');
+const lineCV  = document.getElementById('lineCanvas');
+const cityCV  = document.getElementById('cityCanvas');
+const starCV  = document.getElementById('starCanvas');
+const lctx    = lineCV.getContext('2d');
+const cctx    = cityCV.getContext('2d');
+const sctx    = starCV.getContext('2d');
 
-function vw(){ return Math.min(window.innerWidth, lineCV.parentElement.offsetWidth||680) }
-function vh(){ return window.innerHeight || 600 }
+const WRAP_H  = 3600;
+
+function vw(){ return window.innerWidth }
+function vh(){ return window.innerHeight }
 
 function resizeAll(){
-  lineCV.width = vw(); lineCV.height = vh();
-  starCV.width = vw(); starCV.height = vh();
+  const w=vw(), h=vh();
+  lineCV.width=w;  lineCV.height=h;
+  cityCV.width=w;  cityCV.height=200;
+  starCV.width=w;  starCV.height=h;
 }
 resizeAll();
 window.addEventListener('resize', resizeAll);
 
-// stars
-const stars = Array.from({length:100},()=>({
-  rx:Math.random(), ry:Math.random(),
-  r:Math.random()*1.4+.3,
-  phi:Math.random()*Math.PI*2,
-  spd:.005+Math.random()*.01
+/* ── STARS ── */
+const stars = Array.from({length:120}, () => ({
+  rx: Math.random(), ry: Math.random(),
+  r:  Math.random()*1.5+.3,
+  phi: Math.random()*Math.PI*2,
+  spd: .004+Math.random()*.009
 }));
 
 function drawStars(){
-  const w=vw(),h=vh();
+  const w=vw(), h=vh();
   sctx.clearRect(0,0,w,h);
-  const g=sctx.createLinearGradient(0,0,0,h);
-  g.addColorStop(0,'#04090f');
-  g.addColorStop(.7,'#0a1525');
+  const g = sctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,'#03070e');
+  g.addColorStop(.6,'#08121e');
   g.addColorStop(1,'#1B2A4A');
   sctx.fillStyle=g; sctx.fillRect(0,0,w,h);
   stars.forEach(s=>{
-    s.phi+=s.spd;
-    const a=.12+.5*(Math.sin(s.phi)*.5+.5);
+    s.phi += s.spd;
+    const a = .07 + .5*(Math.sin(s.phi)*.5+.5);
     sctx.beginPath();
-    sctx.arc(s.rx*w,s.ry*h,s.r,0,Math.PI*2);
+    sctx.arc(s.rx*w, s.ry*h, s.r, 0, Math.PI*2);
     sctx.fillStyle=`rgba(255,255,255,${a})`;
     sctx.fill();
   });
@@ -308,167 +314,205 @@ function drawStars(){
 }
 requestAnimationFrame(drawStars);
 
-// SVG-like path waypoints — normalized (x 0-1, y 0-1 within sticky-wrap total height)
-// We'll compute absolute coords dynamically
-// Path goes: bottom-center → snake up to top
-// waypoints in scroll space (0=top of wrap, 1=bottom of wrap)
-// Each point: {rx, ry} relative to [vw(), wrapH]
+/* ── SCROLL PROGRESS ──
+   t = 0  → top of sWrap (scroll just entered)
+   t = 1  → bottom of sWrap (fully scrolled through)
+*/
+function getRelScroll(){
+  const stickyTop = sWrap.getBoundingClientRect().top + window.scrollY;
+  return Math.max(0, window.scrollY - stickyTop);
+}
+function getT(){
+  const maxS = WRAP_H - vh();
+  return Math.min(1, Math.max(0, getRelScroll() / maxS));
+}
 
+/* ── WAYPOINTS: TOP → BOTTOM (snake) ── */
 function getWaypoints(){
-  const w=vw();
-  const wrapH = sWrap.offsetHeight || 3200;
-  // snake: starts at bottom-center, ends near top-center
-  // left/right alternates
+  const w=vw(), h=vh();
   return [
-    {x:w*.5,  y:wrapH*.97},
-    {x:w*.55, y:wrapH*.88},
-    {x:w*.72, y:wrapH*.82},
-    {x:w*.65, y:wrapH*.75},  // near n0 (680px = .21 of 3200)
-    {x:w*.5,  y:wrapH*.72},
-    {x:w*.3,  y:wrapH*.66},
-    {x:w*.25, y:wrapH*.58},  // near n1
-    {x:w*.35, y:wrapH*.52},
-    {x:w*.5,  y:wrapH*.48},
-    {x:w*.68, y:wrapH*.42},
-    {x:w*.72, y:wrapH*.35},  // near n2
-    {x:w*.6,  y:wrapH*.28},
-    {x:w*.45, y:wrapH*.24},
-    {x:w*.3,  y:wrapH*.18},  // near n3
-    {x:w*.38, y:wrapH*.12},
-    {x:w*.5,  y:wrapH*.06},
-    {x:w*.5,  y:wrapH*.01},
+    {x:w*.50, y:h*.03},
+    {x:w*.42, y:h*.12},
+    {x:w*.26, y:h*.21},
+    {x:w*.30, y:h*.31},
+    {x:w*.50, y:h*.38},
+    {x:w*.70, y:h*.45},
+    {x:w*.74, y:h*.54},
+    {x:w*.66, y:h*.63},
+    {x:w*.48, y:h*.70},
+    {x:w*.28, y:h*.77},
+    {x:w*.24, y:h*.85},
+    {x:w*.38, y:h*.93},
+    {x:w*.50, y:h*.97},
   ];
 }
 
-// Build cumulative arc-length table
 function buildPath(pts){
-  const segs=[];
-  let total=0;
+  const segs=[]; let total=0;
   for(let i=1;i<pts.length;i++){
-    const dx=pts[i].x-pts[i-1].x;
-    const dy=pts[i].y-pts[i-1].y;
+    const dx=pts[i].x-pts[i-1].x, dy=pts[i].y-pts[i-1].y;
     const len=Math.sqrt(dx*dx+dy*dy);
     total+=len;
-    segs.push({from:pts[i-1],to:pts[i],len,cum:total});
+    segs.push({from:pts[i-1], to:pts[i], len, cum:total});
   }
-  return {segs,total};
+  return {segs, total};
 }
 
-function getPointAtT(path, t){
-  const target = t * path.total;
-  let prev=0;
-  for(const seg of path.segs){
-    if(seg.cum >= target){
-      const frac=(target-prev)/seg.len;
-      return {
-        x: seg.from.x + (seg.to.x-seg.from.x)*frac,
-        y: seg.from.y + (seg.to.y-seg.from.y)*frac
-      };
+function getPtAtT(path,t){
+  const target=t*path.total; let prev=0;
+  for(const s of path.segs){
+    if(s.cum>=target){
+      const f=(target-prev)/s.len;
+      return {x:s.from.x+(s.to.x-s.from.x)*f, y:s.from.y+(s.to.y-s.from.y)*f};
     }
-    prev=seg.cum;
+    prev=s.cum;
   }
   return path.segs[path.segs.length-1].to;
 }
 
-// Map scroll to path progress
-// scroll 0 = bottom of wrap (start), scroll=wrapH-vh = top (end)
-function scrollToT(){
-  const wrapH = sWrap.offsetHeight||3200;
-  const scrollY = window.scrollY || document.documentElement.scrollTop||0;
-  const stickyTop = sWrap.offsetTop||0;
-  const relScroll = scrollY - stickyTop;
-  const maxScroll = wrapH - vh();
-  // t=0 at bottom of page (relScroll=maxScroll), t=1 at top (relScroll=0)
-  const raw = 1 - Math.max(0,Math.min(1, relScroll/Math.max(1,maxScroll)));
-  return raw;
-}
-
-// Draw the animated line
-function drawLine(t, pts, path){
-  const w=vw(),h=vh();
+function drawLine(t){
+  const w=vw(), h=vh();
   lctx.clearRect(0,0,w,h);
-  if(t<=0) return;
+  const pts  = getWaypoints();
+  const path = buildPath(pts);
 
-  const wrapH=sWrap.offsetHeight||3200;
-  const scrollY=window.scrollY||document.documentElement.scrollTop||0;
-  const stickyTop=sWrap.offsetTop||0;
-  const offsetY=scrollY-stickyTop; // how far we've scrolled into the wrap
-
-  // We need to draw the path segment in viewport coords
-  // viewport y = point.y - offsetY
-  const toVP = p => ({x:p.x, y:p.y-offsetY});
-
-  // find how many path-points to draw based on t
-  const targetLen = t * path.total;
-  let drawn=0;
-
+  /* faint ghost of full path */
   lctx.save();
   lctx.beginPath();
-  const p0v = toVP(pts[0]);
-  lctx.moveTo(p0v.x, p0v.y);
+  lctx.moveTo(pts[0].x, pts[0].y);
+  pts.slice(1).forEach(p => lctx.lineTo(p.x,p.y));
+  lctx.strokeStyle='rgba(128,64,176,.09)';
+  lctx.lineWidth=1.5; lctx.lineJoin='round';
+  lctx.stroke(); lctx.restore();
+
+  if(t<=0.002) return;
+
+  /* drawn portion */
+  const targetLen = t*path.total;
+  let drawn=0;
+  lctx.save();
+  lctx.beginPath();
+  lctx.moveTo(pts[0].x, pts[0].y);
+  let headPt = pts[0];
 
   for(const seg of path.segs){
-    if(drawn + seg.len <= targetLen){
-      const tv=toVP(seg.to);
-      lctx.lineTo(tv.x,tv.y);
-      drawn+=seg.len;
+    if(drawn+seg.len <= targetLen){
+      lctx.lineTo(seg.to.x, seg.to.y);
+      drawn += seg.len;
+      headPt = seg.to;
     } else {
-      const frac=(targetLen-drawn)/seg.len;
-      const tx=seg.from.x+(seg.to.x-seg.from.x)*frac;
-      const ty=seg.from.y+(seg.to.y-seg.from.y)*frac;
-      lctx.lineTo(tx-0,ty-offsetY);
-      drawn=targetLen;
+      const f=(targetLen-drawn)/seg.len;
+      const tx=seg.from.x+(seg.to.x-seg.from.x)*f;
+      const ty=seg.from.y+(seg.to.y-seg.from.y)*f;
+      lctx.lineTo(tx,ty);
+      headPt={x:tx,y:ty};
       break;
     }
   }
 
-  // gradient stroke
-  const head = getPointAtT(path,t);
-  const headVP = {x:head.x, y:head.y-offsetY};
-  const tail = getPointAtT(path,Math.max(0,t-.15));
-  const tailVP = {x:tail.x,y:tail.y-offsetY};
-  const grad=lctx.createLinearGradient(tailVP.x,tailVP.y,headVP.x,headVP.y);
+  const tail = getPtAtT(path, Math.max(0,t-.16));
+  const grad = lctx.createLinearGradient(tail.x,tail.y,headPt.x,headPt.y);
   grad.addColorStop(0,'rgba(128,64,176,0)');
-  grad.addColorStop(1,'rgba(196,184,212,.8)');
+  grad.addColorStop(.4,'rgba(150,80,200,.5)');
+  grad.addColorStop(1,'rgba(255,255,255,.95)');
   lctx.strokeStyle=grad;
-  lctx.lineWidth=2;
-  lctx.lineJoin='round';
-  lctx.lineCap='round';
-  lctx.stroke();
-  lctx.restore();
+  lctx.lineWidth=2.5;
+  lctx.lineJoin='round'; lctx.lineCap='round';
+  lctx.stroke(); lctx.restore();
 
-  // full path faint
-  lctx.save();
-  lctx.beginPath();
-  const fp0=toVP(pts[0]);
-  lctx.moveTo(fp0.x,fp0.y);
-  pts.slice(1).forEach(p=>{const pv=toVP(p);lctx.lineTo(pv.x,pv.y)});
-  lctx.strokeStyle='rgba(128,64,176,.08)';
-  lctx.lineWidth=1.5;
-  lctx.lineJoin='round';
-  lctx.stroke();
-  lctx.restore();
-
-  // dot at head
-  if(headVP.y>-10 && headVP.y<h+10){
-    lctx.beginPath();
-    lctx.arc(headVP.x,headVP.y,5,0,Math.PI*2);
-    lctx.fillStyle='#fff';
-    lctx.fill();
-    const hg=lctx.createRadialGradient(headVP.x,headVP.y,0,headVP.x,headVP.y,20);
-    hg.addColorStop(0,'rgba(128,64,176,.5)');
-    hg.addColorStop(1,'rgba(128,64,176,0)');
-    lctx.beginPath();
-    lctx.arc(headVP.x,headVP.y,20,0,Math.PI*2);
-    lctx.fillStyle=hg;
-    lctx.fill();
-  }
+  /* dot + halo */
+  const hg = lctx.createRadialGradient(headPt.x,headPt.y,0,headPt.x,headPt.y,26);
+  hg.addColorStop(0,'rgba(128,64,176,.55)');
+  hg.addColorStop(1,'rgba(128,64,176,0)');
+  lctx.beginPath(); lctx.arc(headPt.x,headPt.y,26,0,Math.PI*2);
+  lctx.fillStyle=hg; lctx.fill();
+  lctx.beginPath(); lctx.arc(headPt.x,headPt.y,5,0,Math.PI*2);
+  lctx.fillStyle='#fff'; lctx.fill();
 }
 
-// Node visibility — check if node's absolute top is near viewport center
+/* ── CITY ── */
+const blds=[
+  {rx:.012,rw:.020,rh:.50},{rx:.035,rw:.015,rh:.33},{rx:.053,rw:.025,rh:.68,sp:1},
+  {rx:.081,rw:.017,rh:.40},{rx:.101,rw:.028,rh:.75,sp:1},{rx:.133,rw:.019,rh:.30},
+  {rx:.155,rw:.032,rh:.56},{rx:.190,rw:.021,rh:.42},{rx:.214,rw:.017,rh:.27},
+  {rx:.234,rw:.030,rh:.72,sp:1},{rx:.268,rw:.015,rh:.43},{rx:.286,rw:.025,rh:.52},
+  {rx:.314,rw:.034,rh:.85,sp:1},{rx:.352,rw:.019,rh:.36},{rx:.374,rw:.027,rh:.60},
+  {rx:.404,rw:.017,rh:.31},{rx:.424,rw:.032,rh:.77,sp:1},{rx:.460,rw:.021,rh:.44},
+  {rx:.484,rw:.017,rh:.29},{rx:.504,rw:.028,rh:.63},{rx:.536,rw:.019,rh:.41},
+  {rx:.558,rw:.025,rh:.53},{rx:.586,rw:.017,rh:.34},{rx:.606,rw:.032,rh:.73,sp:1},
+  {rx:.642,rw:.021,rh:.40},{rx:.666,rw:.015,rh:.26},{rx:.684,rw:.028,rh:.62},
+  {rx:.716,rw:.019,rh:.46},{rx:.738,rw:.027,rh:.80,sp:1},{rx:.768,rw:.017,rh:.36},
+  {rx:.788,rw:.025,rh:.53},{rx:.816,rw:.021,rh:.38},{rx:.840,rw:.015,rh:.24},
+  {rx:.858,rw:.032,rh:.67,sp:1},{rx:.894,rw:.019,rh:.34},{rx:.916,rw:.023,rh:.48},
+  {rx:.942,rw:.025,rh:.57},{rx:.970,rw:.020,rh:.42}
+];
+
+let cityProg=0, cityRaf=null, cityShown=false;
+
+function drawCity(prog){
+  const w=vw(), h=200;
+  cctx.clearRect(0,0,w,h);
+  const revX = prog*w;
+  blds.forEach(b=>{
+    const cx=b.rx*w, bw=b.rw*w, bh=b.rh*h*.9;
+    const bx=cx-bw/2, by=h-bh;
+    if(bx>revX+1) return;
+    const rev=Math.min(1,Math.max(0,(revX-bx)/(bw+24)));
+    if(rev<=0) return;
+    const cH=bh*rev, cY=h-cH;
+    cctx.fillStyle=`rgba(16,26,52,${.75+b.rh*.15})`; cctx.fillRect(bx,cY,bw,cH);
+    cctx.fillStyle=`rgba(80,40,140,${.15+b.rh*.07})`; cctx.fillRect(bx,cY,bw,cH);
+    if(rev>.4){
+      const ws=Math.max(2,bw*.16);
+      const cols=Math.floor(bw/(ws*1.9));
+      const rows=Math.floor(bh/(ws*2.3));
+      for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+        const wy=by+r*(ws*2.3)+ws*.5; if(wy<cY) continue;
+        const wx=bx+c*(ws*1.9)+ws*.4;
+        if(Math.random()>.42){
+          cctx.fillStyle=`rgba(255,215,110,${(.25+Math.random()*.4)*rev*.55})`;
+          cctx.fillRect(wx,wy,ws,ws*.85);
+        }
+      }
+    }
+    cctx.strokeStyle=`rgba(110,52,170,${rev*.28})`; cctx.lineWidth=.5;
+    cctx.strokeRect(bx,cY,bw,cH);
+    if(b.sp && rev>.76){
+      const sl=20*(rev-.76)*4.5;
+      cctx.strokeStyle=`rgba(196,184,212,${(rev-.76)*3*.4})`; cctx.lineWidth=1;
+      cctx.beginPath(); cctx.moveTo(cx,cY); cctx.lineTo(cx,cY-sl); cctx.stroke();
+    }
+  });
+  cctx.fillStyle='rgba(128,64,176,.15)'; cctx.fillRect(0,h-1,w,1);
+}
+
+function animCity(){
+  if(cityProg>=1){ drawCity(1); return; }
+  cityProg+=.009;
+  drawCity(Math.min(cityProg,1));
+  cityRaf=requestAnimationFrame(animCity);
+}
+
+function showCity(){
+  if(cityShown) return;
+  cityShown=true;
+  cityCV.classList.add('show');
+  if(cityRaf) cancelAnimationFrame(cityRaf);
+  cityProg=0;
+  animCity();
+}
+function hideCity(){
+  if(!cityShown) return;
+  cityShown=false;
+  cityCV.classList.remove('show');
+  if(cityRaf) cancelAnimationFrame(cityRaf);
+  cityProg=0;
+  cctx.clearRect(0,0,vw(),200);
+}
+
+/* ── NODES ── */
 const nodeIds=['n0','n1','p0','n2','p1','n3','p2','p3'];
 const counted=new Set();
-
 const counters=[
   {id:'n0',cid:'c0',val:23,dec:0},
   {id:'n1',cid:'c1',val:16.6,dec:1},
@@ -479,51 +523,56 @@ const counters=[
 function countUp(el,val,dec,dur){
   let s=null;
   const run=ts=>{
-    if(!s)s=ts;
+    if(!s) s=ts;
     const p=Math.min((ts-s)/dur,1);
     const v=(1-Math.pow(1-p,3))*val;
     el.textContent=dec>0?v.toFixed(dec):Math.round(v);
-    if(p<1)requestAnimationFrame(run);
+    if(p<1) requestAnimationFrame(run);
   };
   requestAnimationFrame(run);
 }
 
 function checkNodes(){
-  const scrollY=window.scrollY||0;
-  const h=vh();
-  const stickyTop=sWrap.offsetTop||0;
+  const rel = getRelScroll();
+  const h   = vh();
 
   nodeIds.forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el)return;
-    // node top is relative to sWrap, so absolute top = stickyTop + nodeTopAttr
-    const nodeTop=stickyTop+parseInt(el.style.top||0);
-    const nodeCenter=nodeTop+60;
-    const viewCenter=scrollY+h*.55;
-    const dist=Math.abs(nodeCenter-viewCenter);
-    if(dist<h*.35){
+    const el = document.getElementById(id);
+    if(!el) return;
+    const nodeOffset = parseInt(el.style.top||0);
+    /* show when scrolled past node position minus half viewport */
+    if(rel >= nodeOffset - h*.5){
       el.classList.add('show');
       if(!counted.has(id)){
         counted.add(id);
         const c=counters.find(x=>x.id===id);
-        if(c) countUp(document.getElementById(c.cid),c.val,c.dec,900);
+        if(c) countUp(document.getElementById(c.cid),c.val,c.dec,950);
       }
     }
   });
+
+  /* city: show when we are within last 300px of sWrap scroll */
+  const maxS = WRAP_H - h;
+  const rel2 = getRelScroll();
+  if(rel2 >= maxS - 300){
+    showCity();
+  } else {
+    hideCity();
+  }
 }
 
 let lastT=-1;
 function onScroll(){
-  const pts=getWaypoints();
-  const path=buildPath(pts);
-  const t=scrollToT();
-  if(Math.abs(t-lastT)>.001){
+  const t=getT();
+  if(Math.abs(t-lastT)>.0004){
     lastT=t;
-    drawLine(t,pts,path);
+    drawLine(t);
   }
   checkNodes();
 }
 
-window.addEventListener('scroll',onScroll,{passive:true});
+window.addEventListener('scroll', onScroll, {passive:true});
 onScroll();
 </script>
+</body>
+</html>
