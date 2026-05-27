@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -334,6 +335,7 @@ async function loadData() {
 }
 
 // ===================== RATING =====================
+const MONEY_PLAYERS = ["Бойко Микола","Потєха Олександр","Ревізюк Юрій","Кот Павло","Сергієнко Артем","Жадобін Віталій","Бондарчук Дмитро","Шабельніков Андрій","Пльотка Павло","Моїсеєв Максим","Пилипчук Юрій"];
 const PLAYER_PHOTOS = {"Байдак Ігор": "https://st.getinfootball.com/player/5100451/photo/6669a70e3669a_640x640.jpg", "Бондарчук Дмитро": "https://st.getinfootball.com/player/5100430/photo/6669a72adb764_640x640.jpg", "Бучаков Володимир": "https://st.getinfootball.com/player/5100443/photo/64ae5a4b1c2bb_640x640.jpg", "Донцул Станіслав": "https://st.getinfootball.com/player/5117297/photo/66acaa5381dc9_640x640.jpg", "Дубей Андрій": "https://st.getinfootball.com/player/5100463/photo/66acaa650c076_640x640.jpg", "Жадобін Віталій": "https://st.getinfootball.com/player/5100440/photo/6669a75c0768c_640x640.jpg", "Коробка Максим": "https://st.getinfootball.com/player/5100446/photo/64addbb15d43c_640x640.jpg", "Кот Павло": "https://st.getinfootball.com/player/5100445/photo/64ae5a0de9344_640x640.jpg", "Місюра Віталій": "https://st.getinfootball.com/player/5100438/photo/64ae5932c446f_640x640.jpg", "Моїсеєв Максим": "https://st.getinfootball.com/player/5117299/photo/6669a7acdc231_640x640.jpg", "Оліщук Віталій": "https://st.getinfootball.com/player/5100444/photo/64ae55d23b1bd_640x640.jpg", "Пльотка Павло": "https://st.getinfootball.com/player/5100450/photo/6669a89abb4f5_640x640.jpg", "Проскурін Олексій": "https://st.getinfootball.com/player/5117298/photo/6669a8b0451c7_640x640.jpg", "Сіленко Олександр": "https://st.getinfootball.com/player/5100431/photo/64ae59db368fd_640x640.jpg", "Сергієнко Артем": "https://st.getinfootball.com/player/5100439/photo/64ae58e1d2b32_640x640.jpg", "Сохань Валерій": "https://st.getinfootball.com/player/5117180/photo/6669a5eb44067_640x640.jpg", "Терещенко Юрій": "https://st.getinfootball.com/player/5134450/photo/683976b6b5352_640x640.jpg", "Ревізюк Юрій": "https://st.getinfootball.com/player/5100312/photo/64ae5a315e6fb_640x640.jpg", "Смаковенко Павло": "https://st.getinfootball.com/player/5100619/photo/64cad2666e54a_640x640.jpg", "Іванов Дмитро": "https://st.getinfootball.com/player/5100436/photo/6669a77f10940_640x640.jpg"};
 
 function renderRating(ratings) {
@@ -381,7 +383,7 @@ function renderRating(ratings) {
 
     html += `<tr class="rating-row${topClass}${avgClass}">
       <td class="rank">${rank}</td>
-      <td class="p-name${photoUrl ? ' has-photo' : ''}" ${photoUrl ? `data-photo="${photoUrl}"` : ''}>${p.name}</td>
+      <td class="p-name${photoUrl ? ' has-photo' : ''}" ${photoUrl ? `data-photo="${photoUrl}"` : ''}>${p.name}${MONEY_PLAYERS.includes(p.name) ? ' 💰' : ''}</td>
       <td class="bar-cell"><div class="bar-wrap"><div class="bar" style="width:${barW}%;background:${barColor}"></div></div></td>
       <td class="avg-cell"><div class="avg-num">${avg.toFixed(1)}</div></td>
       <td class="delta-cell">${totalHtml}</td>
