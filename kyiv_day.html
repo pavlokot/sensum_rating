@@ -76,7 +76,20 @@ h1 span{display:block;color:transparent;-webkit-text-stroke:1px rgba(248,251,255
 .proof-card.wide{grid-column:span 2}
 .proof-card strong{font-size:clamp(22px,3vw,38px);line-height:1;font-weight:800;letter-spacing:-.04em}
 .proof-card span{margin-top:16px;color:rgba(184,194,214,.76);font-size:13px;line-height:1.5}
-.photo-band{display:none}
+.photo-band{position:absolute;left:0;right:0;height:640px;z-index:7;pointer-events:none}
+.photo-field{position:relative;width:min(1120px,calc(100% - 48px));height:100%;margin:0 auto;display:flex;align-items:center;justify-content:center}
+.photo-title{position:absolute;left:0;top:36px;color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;text-shadow:0 12px 36px rgba(0,0,0,.72)}
+.section-slider{position:relative;width:100%;height:min(470px,74vh);overflow:hidden;border:1px solid rgba(255,255,255,.14);background:rgba(8,16,30,.55);box-shadow:0 32px 100px rgba(0,0,0,.42);pointer-events:auto}
+.section-track{height:100%;display:flex;transition:transform 1.15s cubic-bezier(.16,1,.3,1);will-change:transform}
+.section-slide{position:relative;flex:0 0 100%;height:100%}
+.section-slide img{width:100%;height:100%;display:block;object-fit:cover;filter:saturate(1.02) brightness(.88)}
+.section-caption{display:none}
+.section-controls{position:absolute;right:20px;bottom:20px;z-index:3;display:flex;gap:8px}
+.section-btn{width:38px;height:38px;border:1px solid rgba(255,255,255,.2);background:rgba(5,11,20,.58);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .2s ease,border-color .2s ease}
+.section-btn:hover{background:rgba(128,64,176,.58);border-color:rgba(244,201,93,.42)}
+.section-dots{position:absolute;left:24px;top:22px;z-index:3;display:flex;gap:7px}
+.section-dot{width:7px;height:7px;border-radius:999px;background:rgba(255,255,255,.28);border:0;cursor:pointer;transition:width .25s ease,background .25s ease}
+.section-dot.is-active{width:26px;background:var(--gold)}
 .quote{position:absolute;z-index:5;left:50%;top:3740px;transform:translateX(-50%);width:min(820px,calc(100% - 36px));text-align:center;padding:34px;border:1px solid rgba(244,201,93,.2);background:linear-gradient(150deg,rgba(244,201,93,.09),rgba(128,64,176,.08));backdrop-filter:blur(18px)}
 .quote p{font-size:clamp(24px,4.5vw,56px);line-height:.98;letter-spacing:-.055em;font-weight:800;color:#fff}
 .quote span{display:block;margin-top:18px;color:rgba(184,194,214,.76);font-size:14px;line-height:1.7}
@@ -92,7 +105,7 @@ h1 span{display:block;color:transparent;-webkit-text-stroke:1px rgba(248,251,255
   .media-label{display:none}
   .topbar{top:18px;left:22px;right:22px;align-items:flex-start}
   .brand img{width:124px}
-  .day{display:none}
+  .day{display:block;font-size:9px;line-height:1.45;text-align:right;max-width:150px;padding-top:2px}
   .hero{top:48%;left:24px;right:24px;width:auto;max-width:calc(100vw - 48px);grid-template-columns:minmax(0,1fr);gap:24px}
   .hero>*{min-width:0}
   .lead-card{width:calc(100vw - 48px);max-width:100%;padding:18px}
@@ -101,6 +114,14 @@ h1 span{display:block;color:transparent;-webkit-text-stroke:1px rgba(248,251,255
   .chapter.reverse .copy,.chapter.reverse .proof{grid-column:auto;grid-row:auto}
   .copy{max-width:calc(100vw - 44px)}
   .proof{display:none}
+  .photo-band{height:520px}
+  .photo-field{width:calc(100% - 36px)}
+  .photo-title{top:20px;font-size:10px;line-height:1.5}
+  .section-slider{height:390px;margin-top:54px}
+  .section-caption{left:16px;right:88px;bottom:16px;font-size:13px}
+  .section-controls{right:14px;bottom:14px}
+  .section-btn{width:34px;height:34px}
+  .section-dots{left:16px;top:16px}
   .stat{font-size:clamp(72px,21vw,118px)}
   .chapter h2{font-size:clamp(30px,9vw,44px)}
   .chapter p{font-size:14px;line-height:1.65}
@@ -251,6 +272,7 @@ const hero=document.querySelector('.hero');
 const topbar=document.querySelector('.topbar');
 const mediaStage=document.getElementById('mediaStage');
 const mediaLabel=document.getElementById('mediaLabel');
+const sliderFields={complex:document.getElementById('pf-complex'),business:document.getElementById('pf-business'),people:document.getElementById('pf-people')};
 const lineCV=document.getElementById('lineCanvas');
 const cityCV=document.getElementById('cityCanvas');
 const starCV=document.getElementById('starCanvas');
@@ -294,6 +316,57 @@ const mediaScenes=[
   {key:'people',from:4720,to:6120,kicker:'люди в місті',title:'Місто живе, коли ним користуються'}
 ];
 const mediaLayers=[];
+const sliderState={};
+function renderSectionSliders(){
+  Object.entries(sliderFields).forEach(([key,field])=>{
+    if(!field)return;
+    const items=media[key];
+    sliderState[key]={idx:0,total:items.length};
+    const slider=document.createElement('div');
+    slider.className='section-slider';
+    slider.dataset.slider=key;
+    const track=document.createElement('div');
+    track.className='section-track';
+    items.forEach(item=>{
+      const slide=document.createElement('figure');
+      slide.className='section-slide';
+      const img=document.createElement('img');
+      img.src=item[0];
+      img.alt=item[1];
+      img.loading='lazy';
+      const cap=document.createElement('figcaption');
+      cap.className='section-caption';
+      cap.textContent=item[1];
+      slide.append(img,cap);
+      track.appendChild(slide);
+    });
+    const controls=document.createElement('div');
+    controls.className='section-controls';
+    controls.innerHTML=`<button class="section-btn" type="button" aria-label="Попереднє фото" data-dir="-1">←</button><button class="section-btn" type="button" aria-label="Наступне фото" data-dir="1">→</button>`;
+    controls.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>slideTo(key,sliderState[key].idx+Number(btn.dataset.dir))));
+    const dots=document.createElement('div');
+    dots.className='section-dots';
+    items.forEach((_,i)=>{
+      const dot=document.createElement('button');
+      dot.className='section-dot'+(i===0?' is-active':'');
+      dot.type='button';
+      dot.setAttribute('aria-label',`Фото ${i+1}`);
+      dot.addEventListener('click',()=>slideTo(key,i));
+      dots.appendChild(dot);
+    });
+    slider.append(track,dots,controls);
+    field.appendChild(slider);
+  });
+}
+function slideTo(key,idx){
+  const state=sliderState[key];
+  if(!state)return;
+  state.idx=(idx+state.total)%state.total;
+  const slider=sliderFields[key]?.querySelector('.section-slider');
+  const track=slider?.querySelector('.section-track');
+  if(track)track.style.transform=`translateX(-${state.idx*100}%)`;
+  slider?.querySelectorAll('.section-dot').forEach((dot,i)=>dot.classList.toggle('is-active',i===state.idx));
+}
 function renderMediaStage(){
   mediaScenes.forEach(scene=>{
     media[scene.key].forEach((item,index)=>{
@@ -485,14 +558,16 @@ function queueLineDraw(t){
 
 const buildings=[.42,.62,.34,.78,.5,.7,.38,.56,.82,.44,.64,.52,.75,.46,.58,.68,.4,.54,.72,.48,.66,.36,.6,.8,.5,.57,.7,.45];
 function drawCity(){const w=vw(),h=230;cctx.clearRect(0,0,w,h);buildings.forEach((bh,i)=>{const bw=w/(buildings.length+8)*(i%3===0?1.35:.92);const gap=w/(buildings.length+2);const x=i*gap-gap*.4;const ht=bh*h*.86;const y=h-ht;cctx.fillStyle=`rgba(15,27,50,${.76+bh*.12})`;cctx.fillRect(x,y,bw,ht);cctx.fillStyle=`rgba(128,64,176,${.06+bh*.05})`;cctx.fillRect(x,y,bw,ht);for(let yy=y+12;yy<h-12;yy+=18){for(let xx=x+6;xx<x+bw-5;xx+=14){if((Math.round(xx+yy+i)%5)>2){cctx.fillStyle='rgba(244,201,93,.2)';cctx.fillRect(xx,yy,3,5)}}}});cctx.fillStyle='rgba(244,201,93,.16)';cctx.fillRect(0,h-1,w,1)}
-renderMediaStage();
+renderSectionSliders();
 resize();
 
 const counters=[{el:'c0',value:10.7,dec:1,chapter:'chapter-meters'},{el:'c1',value:135,dec:0,chapter:'chapter-complexes'},{el:'c3',value:400,dec:0,chapter:'chapter-people'}];
 const counted=new Set();
 function countUp(id,value,dec){const el=document.getElementById(id);let start=null;function step(ts){if(!start)start=ts;const p=Math.min((ts-start)/950,1);const v=(1-Math.pow(1-p,3))*value;el.textContent=dec? v.toFixed(dec):Math.round(v);if(p<1)requestAnimationFrame(step)}requestAnimationFrame(step)}
-function update(){const rel=getRel(),t=getT();progressBar.style.width=(t*100).toFixed(2)+'%';hero.style.opacity=Math.max(0,1-rel/520).toFixed(3);hero.style.transform=`translateY(calc(-50% - ${Math.min(rel*.08,34)}px))`;if(vw()<=820){topbar.style.opacity=Math.max(0,1-rel/360).toFixed(3);topbar.style.transform=`translateY(-${Math.min(rel*.05,18)}px)`}else{topbar.style.opacity='';topbar.style.transform=''}queueLineDraw(t);document.querySelectorAll('.chapter').forEach(ch=>{const top=parseInt(ch.style.top||0,10);const active=rel>top-vh()*.48&&rel<top+vh()*.72;ch.classList.toggle('is-active',active)});const foregroundBusy=!!document.querySelector('.chapter.is-active')||(rel>3180&&rel<4080);updateMedia(rel,foregroundBusy);counters.forEach(c=>{const ch=document.getElementById(c.chapter);if(ch.classList.contains('is-active')&&!counted.has(c.el)){counted.add(c.el);countUp(c.el,c.value,c.dec)}})}
+function counterIsVisible(id){const r=document.getElementById(id).getBoundingClientRect();return r.top<vh()*.82&&r.bottom>vh()*.12}
+function update(){const rel=getRel(),t=getT();progressBar.style.width=(t*100).toFixed(2)+'%';hero.style.opacity=Math.max(0,1-rel/520).toFixed(3);hero.style.transform=`translateY(calc(-50% - ${Math.min(rel*.08,34)}px))`;if(vw()<=820){topbar.style.opacity=Math.max(0,1-rel/360).toFixed(3);topbar.style.transform=`translateY(-${Math.min(rel*.05,18)}px)`}else{topbar.style.opacity='';topbar.style.transform=''}queueLineDraw(t);document.querySelectorAll('.chapter').forEach(ch=>{const top=parseInt(ch.style.top||0,10);const active=rel>top-vh()*.48&&rel<top+vh()*.72;ch.classList.toggle('is-active',active)});counters.forEach(c=>{if(counterIsVisible(c.el)&&!counted.has(c.el)){counted.add(c.el);countUp(c.el,c.value,c.dec)}})}
 addEventListener('scroll',update,{passive:true});
+setInterval(()=>{Object.keys(sliderState).forEach(key=>{const band=sliderFields[key]?.closest('.photo-band');if(!band)return;const r=band.getBoundingClientRect();if(r.top<vh()*.82&&r.bottom>vh()*.18)slideTo(key,sliderState[key].idx+1)})},4600);
 update();
 </script>
 </body>
