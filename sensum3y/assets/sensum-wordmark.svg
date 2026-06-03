@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160" fill="none">
+  
+  <g>
+    <path d="M105 30 L165 90 L105 150 L85 150 L145 90 L85 30 Z" fill="#999361" opacity="0.95"></path>
+    <path d="M65 30 L125 90 L65 150 L45 150 L105 90 L45 30 Z" fill="#E1CC01"></path>
+  </g>
+  <text x="200" y="105" font-family="Oswald, sans-serif" font-size="64" font-weight="600" letter-spacing="6" fill="#0A0A0A">SENSUM</text>
+  <text x="201" y="135" font-family="Oswald, sans-serif" font-size="14" font-weight="400" letter-spacing="6" fill="#4A4A4A">CHARITABLE FOUNDATION</text>
+</svg>
