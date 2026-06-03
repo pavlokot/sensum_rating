@@ -1,0 +1,19 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  html,body{margin:0;background:#FAFAF7;font-family:var(--font-sans);}
+  .wrap{padding:28px;display:flex;gap:24px;align-items:center;}
+  .card{width:160px;height:120px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:#4A4A4A;}
+  .meta{font-family:var(--font-mono);font-size:10px;color:#8A8A8A;text-align:center;margin-top:8px;}
+  .col{display:flex;flex-direction:column;align-items:center;}
+</style></head><body>
+<div class="wrap">
+  <div class="col"><div class="card" style="box-shadow:none;border:1px solid rgba(0,0,0,.12)">none</div><div class="meta">--shadow-none</div></div>
+  <div class="col"><div class="card" style="box-shadow:0 2px 8px rgba(0,0,0,0.06)">soft</div><div class="meta">--shadow-soft</div></div>
+  <div class="col"><div class="card" style="box-shadow:0 8px 24px rgba(0,0,0,0.08)">pop</div><div class="meta">--shadow-pop</div></div>
+</div>
+<div style="padding:0 28px 24px;font-family:var(--font-sans);font-size:11px;color:#4A4A4A;font-weight:300;line-height:1.5;max-width:580px;">
+  No drop shadows on brand surfaces. Soft / pop are reserved for floating UI (menus, modals) only.
+</div>
+</body></html>

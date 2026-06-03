@@ -1,0 +1,29 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  html,body{margin:0;background:#fff;font-family:var(--font-sans);}
+  .wrap{padding:0;display:grid;grid-template-columns:1fr 1fr;gap:0;height:300px;}
+  .pane{position:relative;overflow:hidden;}
+  .yellow{background:#E1CC01;}
+  .white{background:#fff;}
+  .photo{position:absolute;left:24px;top:24px;width:140px;height:200px;background:url('../assets/quote-card-zhadobin.jpg');background-size:380% 240%;background-position:9% 22%;filter:grayscale(1) contrast(1.05);}
+  .chev{position:absolute;right:-30px;top:24px;width:240px;height:200px;}
+  .quote{position:absolute;left:24px;bottom:18px;font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.02em;line-height:1.2;color:#0A0A0A;max-width:80%;}
+  .name{position:absolute;left:24px;bottom:60px;font-family:var(--font-display);font-size:22px;}
+</style></head><body>
+<div class="wrap">
+  <div class="pane yellow">
+    <div class="photo"></div>
+    <svg class="chev" viewBox="0 0 240 200" fill="none">
+      <path d="M125 10 L210 100 L125 190 L100 190 L185 100 L100 10 Z" fill="#999361" opacity="0.95"/>
+      <path d="M65 10 L150 100 L65 190 L40 190 L125 100 L40 10 Z" fill="#F8F1BB"/>
+    </svg>
+  </div>
+  <div class="pane white">
+    <div class="quote">«Допомагати збройним силам — наша спільна мета.»</div>
+    <div class="name">Віталій Жадобін</div>
+    <div style="position:absolute;left:24px;bottom:24px;font-size:9px;font-weight:300;text-transform:uppercase;letter-spacing:.08em;color:#4A4A4A;">Співзасновник БО «БФ Сенсум»</div>
+  </div>
+</div>
+</body></html>
