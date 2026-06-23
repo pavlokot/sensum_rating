@@ -377,11 +377,12 @@ function doSplit(shuffle) {
 
   const teams = Array.from({length: n}, () => ({players:[], total:0}));
 
-  // Assign goalies first — each to separate team (lowest-total team)
-  goaliePlayers.forEach(p => {
-    const minIdx = teams.reduce((min, t, i) => t.total < teams[min].total ? i : min, 0);
-    teams[minIdx].players.push({ ...p, isGoalie: true });
-    teams[minIdx].total = Math.round((teams[minIdx].total + p.rating) * 100) / 100;
+  // Assign goalies — each to separate team. Their rating does NOT count in balance.
+  // For reshuffle — randomize which team gets which goalie
+  const goalieOrder = shuffle ? [...goaliePlayers].sort(() => Math.random() - 0.5) : goaliePlayers;
+  goalieOrder.forEach((p, idx) => {
+    teams[idx % teams.length].players.push({ ...p, isGoalie: true });
+    // NOTE: deliberately not adding p.rating to teams[idx].total
   });
 
   // Distribute the rest balanced
