@@ -50,6 +50,7 @@
     .check-wrap.win input:checked ~ .check-box { background:var(--green); border-color:var(--green); color:#fff; }
     .check-wrap.lose input:checked ~ .check-box { background:var(--red); border-color:var(--red); color:#fff; }
     .check-wrap.sel input:checked ~ .check-box { background:var(--yellow); border-color:var(--yellow); color:#000; }
+    .check-wrap.goalie input:checked ~ .check-box { background:#FF9800; border-color:#FF9800; }
 
     .submit-btn { width:100%; padding:16px; background:var(--yellow); color:#000; font-size:13px; letter-spacing:3px; text-transform:uppercase; border:none; cursor:pointer; font-weight:700; }
     .submit-btn:disabled { opacity:0.4; cursor:not-allowed; }
@@ -208,24 +209,37 @@ function buildTeamsList() {
   PLAYERS.forEach((p, i) => {
     const row = document.createElement('div');
     row.className = 'player-row';
-    row.style.cursor = 'pointer';
     row.id = 'trow_' + i;
     row.innerHTML = `
-      <div class="player-name">${p.name}</div>
+      <div class="player-name" style="cursor:pointer">${p.name}</div>
       <div class="player-rating">${p.rating.toFixed(1)}</div>
-      <label class="check-wrap sel">
-        <input type="checkbox" id="tcheck_${i}" onchange="onTeamCheck()">
-        <div class="check-box">✓</div>
-      </label>`;
-    row.addEventListener('click', e => {
-      if (e.target.tagName !== 'INPUT') {
-        const cb = document.getElementById('tcheck_' + i);
-        cb.checked = !cb.checked;
-        onTeamCheck();
-      }
+      <div class="checks">
+        <label class="check-wrap goalie" title="Воротар">
+          <input type="checkbox" id="gcheck_${i}" onchange="onGoalieCheck(${i})">
+          <div class="check-box">🧤</div>
+        </label>
+        <label class="check-wrap sel" title="Грає">
+          <input type="checkbox" id="tcheck_${i}" onchange="onTeamCheck()">
+          <div class="check-box">✓</div>
+        </label>
+      </div>`;
+    row.querySelector('.player-name').addEventListener('click', () => {
+      const cb = document.getElementById('tcheck_' + i);
+      cb.checked = !cb.checked;
+      onTeamCheck();
     });
     list.appendChild(row);
   });
+}
+
+function onGoalieCheck(i) {
+  const goalieCb = document.getElementById('gcheck_' + i);
+  const playCb = document.getElementById('tcheck_' + i);
+  // Auto-check "playing" if goalie is checked
+  if (goalieCb.checked) {
+    playCb.checked = true;
+    onTeamCheck();
+  }
 }
 
 function onCheck(i, type) {
@@ -303,6 +317,17 @@ function getGuests() {
   return guests;
 }
 
+let lastSplit = null; // remember last split params for reshuffle
+
+function getGoalies() {
+  const goalies = [];
+  PLAYERS.forEach((p, i) => {
+    const cb = document.getElementById('gcheck_' + i);
+    if (cb && cb.checked) goalies.push(p.name);
+  });
+  return goalies;
+}
+
 function splitTeams(n) {
   const selected = [
     ...PLAYERS.filter((_, i) => document.getElementById('tcheck_' + i).checked),
@@ -313,17 +338,64 @@ function splitTeams(n) {
       '<div style="color:var(--red);font-size:12px;letter-spacing:2px;padding:16px 0">Замало гравців для ' + n + ' команд</div>';
     return;
   }
+  const goalies = getGoalies();
+  if (goalies.length > n) {
+    document.getElementById('teamsOutput').innerHTML =
+      '<div style="color:var(--red);font-size:12px;letter-spacing:2px;padding:16px 0">Забагато воротарів для ' + n + ' команд (макс ' + n + ')</div>';
+    return;
+  }
+  lastSplit = { n, selected, goalies };
+  doSplit(false);
+}
 
-  const sorted = [...selected].sort((a,b) => b.rating - a.rating);
+function reshuffle() {
+  if (!lastSplit) return;
+  doSplit(true);
+}
+
+function doSplit(shuffle) {
+  const { n, selected, goalies } = lastSplit;
+
+  // Separate goalies from rest
+  const goaliePlayers = selected.filter(p => goalies.includes(p.name));
+  let rest = selected.filter(p => !goalies.includes(p.name));
+
+  // If reshuffle — randomize a bit before sorting (shuffle pairs of equal-ish rating)
+  if (shuffle) {
+    // Add small random jitter to break ties differently
+    rest = rest.map(p => ({ ...p, _j: Math.random() }));
+    rest.sort((a,b) => (b.rating - a.rating) || (a._j - b._j));
+    // Swap a few random adjacent pairs to vary distribution
+    for (let i = 0; i < rest.length - 1; i++) {
+      if (Math.random() < 0.4) {
+        [rest[i], rest[i+1]] = [rest[i+1], rest[i]];
+      }
+    }
+  } else {
+    rest.sort((a,b) => b.rating - a.rating);
+  }
+
   const teams = Array.from({length: n}, () => ({players:[], total:0}));
 
-  sorted.forEach(p => {
+  // Assign goalies first — each to separate team (lowest-total team)
+  goaliePlayers.forEach(p => {
+    const minIdx = teams.reduce((min, t, i) => t.total < teams[min].total ? i : min, 0);
+    teams[minIdx].players.push({ ...p, isGoalie: true });
+    teams[minIdx].total = Math.round((teams[minIdx].total + p.rating) * 100) / 100;
+  });
+
+  // Distribute the rest balanced
+  rest.forEach(p => {
     const minIdx = teams.reduce((min, t, i) => t.total < teams[min].total ? i : min, 0);
     teams[minIdx].players.push(p);
     teams[minIdx].total = Math.round((teams[minIdx].total + p.rating) * 100) / 100;
   });
 
-  teams.forEach(t => t.players.sort((a,b) => b.rating - a.rating));
+  teams.forEach(t => t.players.sort((a,b) => {
+    if (a.isGoalie && !b.isGoalie) return -1;
+    if (!a.isGoalie && b.isGoalie) return 1;
+    return b.rating - a.rating;
+  }));
 
   document.getElementById('teamsOutput').innerHTML =
     '<div class="teams-output">' +
@@ -332,12 +404,13 @@ function splitTeams(n) {
         <div class="team-title">КОМАНДА ${i+1}</div>
         ${t.players.map(p => `
           <div class="team-player">
-            <span>${p.name}</span>
+            <span>${p.isGoalie ? '🧤 ' : ''}${p.name}</span>
             <span class="team-score">${p.rating.toFixed(1)}</span>
           </div>`).join('')}
         <div class="team-total">Сума: ${t.total.toFixed(2)}</div>
       </div>`).join('') +
-    '</div>';
+    '</div>' +
+    '<button class="split-btn" style="margin-top:12px" onclick="reshuffle()">🔀 Перемішати</button>';
 }
 </script>
 </body>
