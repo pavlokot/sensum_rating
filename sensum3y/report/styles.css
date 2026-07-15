@@ -1251,7 +1251,7 @@ figcaption {
   grid-row: span 2;
   background: var(--ink);
 }
-.madyar .featured-madyar img { object-fit: contain; }
+.madyar .featured-madyar img { object-fit: cover; }
 
 .compact-feature .feature-grid { align-items: center; }
 .single-photo { aspect-ratio: 4 / 5; max-height: 640px; }
