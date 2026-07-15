@@ -46,8 +46,8 @@ const events = [
   {
     year: 2023,
     date: "31 серпня · 2023",
-    title: "Молодіжні чоловічі команди волейболу України",
-    what: "Разом із Київською дитячою волейбольною академією підтримали поїздку українських спортсменів на Beach Pro Tour Futures 2023 у Варшаві.",
+    title: "Юнацька збірна України з пляжного волейболу",
+    what: "Разом із Київською дитячою волейбольною академією підтримали поїздку спортсменів на міжнародні змагання Beach Pro Tour Futures 2023 у Варшаві.",
     image: "assets/photos/volleyball-warsaw-team.jpg",
     tags: ["спорт", "соцпроєкт"],
     social: true,
@@ -84,14 +84,15 @@ const events = [
     date: "29 листопада · 2023",
     title: "1 БрОП НГУ «Буревій»",
     what: "Відновлення автомобіля",
-    image: "assets/photos/bureviy-thanks.jpg",
+    image: "assets/photos/475583959_511853155258858_8101242820729104032_n.jpg",
+    orientation: "portrait",
     tags: ["ремонт", "авто"],
     orientation: "portrait",
   },
   {
     year: 2023,
     date: "12 грудня · 2023",
-    title: "Швидка на лінію",
+    title: "Швидка на передову",
     what: "Автомобіль швидкої допомоги з укомплектуванням",
     image: "assets/photos/ambulance-2023-12-12.png",
     tags: ["медицина", "евакуація"],
@@ -112,7 +113,7 @@ const events = [
     year: 2024,
     date: "17 січня · 2024",
     title: "1 Президентська бр.",
-    what: "Старт збору на РЕБ: 3 спектр-аналізатори «Цукорок» і 3 підсилювачі сигналу «Шатро» STR 50-IV.",
+    what: "3 спектр-аналізатори «Цукорок» і 3 підсилювачі сигналу «Шатро» STR 50-IV.",
     image: "assets/photos/first-presidential-reb-fundraiser-2024-01-17.jpg",
     tags: ["РЕБ", "збір"],
     orientation: "portrait",
@@ -139,7 +140,7 @@ const events = [
     year: 2024,
     date: "8 травня · 2024",
     title: "БФ «Гуркіт» · футбол 5x5",
-    what: "Благодійний турнір з міні-футболу: 12 команд і збір на 5 приладів нічного бачення.",
+    what: "Взяли участь у благодійному турнірі з міні-футболу — 12 команд, спільний збір на прилади нічного бачення для ЗСУ.",
     image: "assets/photos/football-charity-cup-5x5.jpg",
     tags: ["спорт", "соцпроєкт", "750 000 грн"],
     social: true,
@@ -157,7 +158,7 @@ const events = [
   {
     year: 2024,
     date: "19 серпня · 2024",
-    title: "Чемпіонат · пляжний футбол",
+    title: "Чемпіонат Києва · пляжний футбол",
     what: "Команда БФ SENSUM посіла 1 місце у своїй лізі.",
     image: "assets/photos/beach-football-champions-2024.jpg",
     tags: ["спорт", "соцпроєкт"],
@@ -292,6 +293,16 @@ const events = [
   },
   {
     year: 2026,
+    date: "2026",
+    title: "Воротарська школа Віталія Сидоренка",
+    what: "Фінансова та організаційна допомога дитячій воротарській школі Віталія Сидоренка.",
+    image: "assets/photos/viber_image_2026-02-13_08-45-21-460.jpeg",
+    tags: ["спорт", "соцпроєкт", "діти"],
+    social: true,
+    orientation: "wide-photo",
+  },
+  {
+    year: 2026,
     date: "4 березня · 2026",
     title: "Адресна допомога військовослужбовцю",
     what: "Цільова благодійна допомога 432 982 грн на придбання житла.",
@@ -415,7 +426,7 @@ function featureBlock(kind) {
           <figure class="wide"><img src="assets/photos/53-ombr-company-documentary-02.png" alt="Бійці 1 роти 53 ОМБр біля автомобіля підрозділу"><figcaption>Документальний кадр</figcaption></figure>
           <figure><img src="assets/photos/53-ombr-sensum-pickup-side.jpg" alt="Пікап із написом СЕНСУМ для 53 ОМБр"><figcaption>Брендований пікап</figcaption></figure>
           <figure><img src="assets/photos/legacy-inline-01.jpg" alt="Грудень 2024, передача для 53 ОМБр"><figcaption>Грудень 2024</figcaption></figure>
-          <figure><img src="assets/photos/legacy-inline-02.jpg" alt="Квітень 2025, передача для 53 ОМБр"><figcaption>Квітень 2025</figcaption></figure>
+          <figure><img src="assets/photos/Screenshot%202026-06-19%20at%2020.55.08.png" alt="Двоє бійців біля пікапа підрозділу в осінньому лісі"><figcaption>Квітень 2025</figcaption></figure>
           <figure><img src="assets/photos/legacy-inline-05.jpg" alt="Серпень 2025, передача для 53 ОМБр"><figcaption>Серпень 2025</figcaption></figure>
         </div>
       </article>`,
@@ -484,3 +495,10 @@ root.appendChild(featureBlock("madyar"));
 root.appendChild(yearBlock(2025));
 root.appendChild(featureBlock("45"));
 root.appendChild(yearBlock(2026));
+
+// Keep the page anchored at the top on load — some mobile browsers restore a
+// stale scroll position before the JS-built timeline exists, landing the user
+// at the very bottom. Disable scroll restoration and reset to top.
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+window.scrollTo(0, 0);
+window.addEventListener("load", () => window.scrollTo(0, 0));

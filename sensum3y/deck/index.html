@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8"/>
+<title>БФ «Сенсум» · Зведений звіт 2023–2026 · Презентація</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  html, body { margin: 0; background: #1a1a1a; }
+  * { box-sizing: border-box; }
+
+  .slide {
+    width: var(--slide-w);
+    height: var(--slide-h);
+    background: var(--paper);
+    padding: var(--slide-pad);
+    position: relative;
+    overflow: hidden;
+    font-family: var(--font-body);
+    color: var(--ink);
+  }
+
+  .kicker {
+    font-family: var(--font-sans);
+    font-size: 20px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tr-caps);
+    color: var(--ink-3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .kicker .dot { width: 8px; height: 8px; background: var(--sensum-yellow); border-radius: 50%; flex: none; }
+
+  .headline {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tr-display);
+    line-height: 0.98;
+    margin: 20px 0 0;
+    text-wrap: balance;
+  }
+  .headline.xl { font-size: 108px; }
+  .headline.lg { font-size: 76px; }
+  .headline.md { font-size: 56px; }
+
+  .hl-accent { color: var(--sensum-yellow); }
+
+  .body-copy {
+    font-family: var(--font-body);
+    font-size: 22px;
+    line-height: var(--lh-loose);
+    color: var(--ink-2);
+    max-width: 900px;
+  }
+  .body-copy + .body-copy { margin-top: 20px; }
+
+  /* footer */
+  .footer {
+    position: absolute; left: 96px; right: 96px; bottom: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-sans);
+    font-size: 16px; font-weight: 400; text-transform: uppercase; letter-spacing: var(--tr-caps);
+    color: var(--ink-3);
+  }
+  .footer .brand { display: flex; align-items: center; gap: 12px; }
+  .footer.on-dark { color: rgba(255,255,255,0.72); }
+
+  .chevron { display: block; flex: none; }
+
+  img.bw { filter: grayscale(1) contrast(1.08) brightness(1.02); display: block; }
+
+  /* ============ TITLE ============ */
+  .slide-title { padding: 0; background: #0A0A0A; }
+  .slide-title .bg {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(1) contrast(1.1) brightness(0.55);
+  }
+  .slide-title .scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 38%, rgba(0,0,0,0.85) 100%);
+  }
+  .slide-title .bar { position: absolute; top: 0; left: 0; right: 0; height: 10px; background: var(--sensum-yellow); }
+  .slide-title .content { position: absolute; left: 96px; right: 96px; bottom: 120px; color: #fff; }
+  .slide-title .kicker { color: var(--sensum-yellow); }
+  .slide-title .headline { color: #fff; }
+  .slide-title .headline .hl-accent { color: var(--sensum-yellow); }
+  .stat-box.accent .stat-num { color: var(--ink); }
+  .slide-title .body-copy { color: rgba(255,255,255,0.88); font-size: 24px; max-width: 780px; margin-top: 28px; }
+
+  /* ============ STATS ============ */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 64px; }
+  .stat-box {
+    border: 1px solid var(--line); padding: 40px; height: 300px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .stat-box.accent { background: var(--sensum-yellow); border: 0; }
+  .stat-num { font-family: var(--font-sans); font-size: 96px; font-weight: 700; line-height: 0.95; letter-spacing: -0.01em; }
+  .stat-label { font-family: var(--font-sans); font-size: 18px; font-weight: 500; text-transform: uppercase; letter-spacing: var(--tr-caps); color: var(--ink-3); }
+  .stat-box.accent .stat-label { color: var(--ink); }
+
+  /* ============ ABOUT ============ */
+  .about-wrap { display: grid; grid-template-columns: 1fr 560px; gap: 72px; margin-top: 44px; align-items: start; }
+  .about-photo { background: var(--sensum-yellow); padding: 20px; }
+  .about-photo img { width: 100%; height: 620px; object-fit: cover; }
+  .pull-quote {
+    position: absolute; left: 96px; right: 96px; bottom: 140px;
+    font-family: var(--font-sans); font-size: 30px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: var(--tr-display); line-height: 1.25;
+    border-left: 6px solid var(--sensum-yellow); padding-left: 28px; max-width: 1100px;
+  }
+
+  /* ============ SHOWCASE (flagship / mara / madyar / thanks) ============ */
+  .showcase { display: grid; grid-template-columns: 1fr 620px; gap: 64px; height: 100%; margin-top: 36px; }
+  .showcase-media { position: relative; background: var(--sensum-olive); }
+  .showcase-media img { width: 100%; height: 100%; object-fit: cover; }
+  .showcase-media.square img { aspect-ratio: 1/1; height: auto; }
+  .showcase-figs { display: flex; gap: 20px; margin-top: 36px; }
+  .fig { flex: 1; }
+  .fig-num { font-family: var(--font-sans); font-size: 52px; font-weight: 700; line-height: 1; }
+  .fig-label { font-family: var(--font-sans); font-size: 15px; font-weight: 500; text-transform: uppercase; letter-spacing: var(--tr-caps); color: var(--ink-3); margin-top: 8px; }
+  .milestones { margin-top: 32px; border-top: 1px solid var(--line); }
+  .milestone { display: grid; grid-template-columns: 150px 1fr; gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .milestone .d { font-family: var(--font-sans); font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: var(--tr-caps); color: var(--ink-3); }
+  .milestone .t { font-family: var(--font-body); font-size: 16px; color: var(--ink); }
+
+  /* ============ YEAR LIST ============ */
+  .year-head { display: flex; align-items: baseline; justify-content: space-between; margin-top: 8px; }
+  .year-num { font-family: var(--font-sans); font-size: 140px; font-weight: 700; line-height: 0.85; color: var(--sensum-yellow); -webkit-text-stroke: 2px var(--ink); }
+  .year-list { margin-top: 12px; }
+  .row {
+    display: grid; grid-template-columns: 128px 300px 1fr 230px;
+    align-items: center; gap: 20px;
+    padding: 12px 0; border-bottom: 1px solid var(--line);
+  }
+  .row .date { font-family: var(--font-sans); font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: var(--tr-caps); color: var(--ink-3); }
+  .row .org { font-family: var(--font-sans); font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.01em; line-height: 1.2; }
+  .row .desc { font-family: var(--font-body); font-size: 15px; color: var(--ink-2); line-height: 1.3; }
+  .row .desc b { font-weight: 600; }
+  .row .tags { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+  .tag {
+    font-family: var(--font-sans); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 5px 9px; background: var(--sensum-yellow-cream); color: var(--ink); white-space: nowrap;
+  }
+
+  /* ============ FOUNDERS ============ */
+  .founders-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; margin-top: 36px; }
+  .founder { text-align: left; }
+  .founder-photo { width: 100%; height: 208px; object-fit: cover; background: var(--sensum-olive); display: block; }
+  .founder-name { font-family: var(--font-sans); font-size: 17px; font-weight: 600; text-transform: uppercase; margin-top: 12px; line-height: 1.15; }
+  .founder-role { font-family: var(--font-sans); font-size: 12px; font-weight: 400; text-transform: uppercase; letter-spacing: var(--tr-caps); color: var(--ink-3); margin-top: 3px; }
+
+  /* ============ CTA ============ */
+  .slide-cta { background: var(--sensum-yellow); }
+  .cta-wrap { display: grid; grid-template-columns: 1fr 640px; gap: 64px; margin-top: 56px; }
+  .req-list { border-top: 1px solid rgba(10,10,10,0.24); }
+  .req-row { display: grid; grid-template-columns: 260px 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid rgba(10,10,10,0.24); }
+  .req-row .k { font-family: var(--font-sans); font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: var(--tr-caps); }
+  .req-row .v { font-family: var(--font-mono); font-size: 18px; }
+  .social-row { display: flex; gap: 32px; margin-top: 32px; }
+  .social-row .s { font-family: var(--font-sans); font-size: 18px; font-weight: 500; text-transform: uppercase; letter-spacing: var(--tr-caps); border-bottom: 2px solid var(--ink); padding-bottom: 4px; }
+  .cta-side { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; border-left: 1px solid rgba(10,10,10,0.24); padding-left: 64px; }
+</style>
+<script src="../deck-stage.js"></script>
+</head>
+<body>
+<deck-stage id="stage" width="1920" height="1080">
+
+<!-- 1 : TITLE -->
+<section class="slide slide-title" data-label="Титул">
+  <img class="bg" src="../report/assets/photos/vepryk-partner-group-2024-11-18.jpg" alt=""/>
+  <div class="scrim"></div>
+  <div class="bar"></div>
+  <div class="content">
+    <div class="kicker"><span class="dot"></span>ЗВЕДЕНИЙ ЗВІТ &nbsp;·&nbsp; 2023 — 2026</div>
+    <div class="headline xl">БЛАГОДІЙНИЙ<br/>ФОНД <span class="hl-accent">«СЕНСУМ»</span></div>
+    <div class="body-copy">Три роки системної допомоги військовим підрозділам, партнерських зборів, звітів і соціально-спортивних ініціатив.</div>
+  </div>
+  <div class="footer on-dark">
+    <div class="brand">
+      <svg class="chevron" width="22" height="22" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#E1CC01"/></svg>
+      <span>БО · БФ «Сенсум»</span>
+    </div>
+    <span>01 / 13</span>
+  </div>
+</section>
+
+<!-- 2 : STATS -->
+<section class="slide" data-label="Підсумок за три роки">
+  <div class="kicker"><span class="dot"></span>ПІДСУМОК ЗА ТРИ РОКИ</div>
+  <div class="headline lg">ТРИ РОКИ<br/>У ЦИФРАХ</div>
+  <div class="stats-grid">
+    <div class="stat-box accent"><div class="stat-num">63</div><div class="stat-label">Задокументовані передачі</div></div>
+    <div class="stat-box"><div class="stat-num">30+</div><div class="stat-label">Підрозділів і організацій</div></div>
+    <div class="stat-box"><div class="stat-num">3 роки</div><div class="stat-label">Безперервної допомоги</div></div>
+    <div class="stat-box"><div class="stat-num">4</div><div class="stat-label">Соціально-спортивні проєкти</div></div>
+  </div>
+  <div class="footer">
+    <div class="brand">
+      <svg class="chevron" width="22" height="22" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#E1CC01"/></svg>
+      <span>БО · БФ «Сенсум»</span>
+    </div>
+    <span>02 / 13</span>
+  </div>
+</section>
+
+<!-- 3 : ABOUT -->
+<section class="slide" data-label="Про фонд">
+  <div class="kicker"><span class="dot"></span>01 — ПРО ФОНД</div>
+  <div class="headline md">ОКРЕМИЙ БЛАГОДІЙНИЙ<br/>НАПРЯМОК SENSUM LAW FIRM</div>
+  <div class="about-wrap">
+    <div>
+      <div class="body-copy">БФ «Сенсум» виріс із постійної допомоги армії після лютого 2022 року. Фонд працює як системний майданчик для зборів, передач і прозорої звітності перед людьми, які підтримують військових.</div>
+      <div class="body-copy">У фокусі фонду: автомобілі, РЕБ, дрони, оптика, зв'язок, енергозабезпечення, базові потреби підрозділів, а також соціально-спортивні проєкти для майбутнього повернення ветеранів до повноцінного життя.</div>
+    </div>
+    <div class="about-photo">
+      <img class="bw" src="../report/assets/photos/53-ombr-company-documentary-02.png" alt=""/>
+    </div>
+  </div>
+  <div class="pull-quote">«Маленьких донатів не буває, як і не буває маленьких звітів.»</div>
+  <div class="footer">
+    <div class="brand">
+      <svg class="chevron" width="22" height="22" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#E1CC01"/></svg>
+      <span>БО · БФ «Сенсум»</span>
+    </div>
+    <span>03 / 13</span>
+  </div>
+</section>
+
+<!-- 4 : FLAGSHIP 53 OMBR -->
+<section class="slide" data-label="Флагманська лінія · 53 ОМБр">
+  <div class="kicker"><span class="dot"></span>02 — ХРОНОЛОГІЯ · ФЛАГМАНСЬКА ПАРТНЕРСЬКА ЛІНІЯ</div>
+  <div class="headline md">1 РОТА 53 ОМБр</div>
+  <div class="showcase">
+    <div>
+      <div class="body-copy">Три роки безперервної допомоги одній роті: від антидронових систем і транспорту до пікапів, гуми, дронів та ремонтів. За цією історією видно, як змінювались потреби підрозділу й сам характер війни.</div>
+      <div class="showcase-figs">
+        <div class="fig"><div class="fig-num">13</div><div class="fig-label">Передач</div></div>
+        <div class="fig"><div class="fig-num">2023–2025</div><div class="fig-label">Період</div></div>
+      </div>
+      <div class="milestones">
+        <div class="milestone"><div class="d">7 лис 2023</div><div class="t">Передова антидронова система</div></div>
+        <div class="milestone"><div class="d">19 лют 2024</div><div class="t">Автомобіль</div></div>
+        <div class="milestone"><div class="d">7 бер 2024</div><div class="t">Звіт про роботу переданих антидронових глушилок</div></div>
+        <div class="milestone"><div class="d">26 бер 2024</div><div class="t">Додаткові безпілотники для розвідки й коригування</div></div>
+        <div class="milestone"><div class="d">8 жов 2024</div><div class="t">Комплект топової гуми</div></div>
+        <div class="milestone"><div class="d">19 гру 2024</div><div class="t">Пікап</div></div>
+        <div class="milestone"><div class="d">2025</div><div class="t">Серія авто та оновлення автопарку після втрат</div></div>
+      </div>
+    </div>
+    <div class="showcase-media"><img class="bw" src="../report/assets/photos/53-ombr-sensum-pickup-side.jpg" alt=""/></div>
+  </div>
+  <div class="footer">
+    <div class="brand">
+      <svg class="chevron" width="22" height="22" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#E1CC01"/></svg>
+      <span>БО · БФ «Сенсум»</span>
+    </div>
+    <span>04 / 13</span>
+  </div>
+</section>
+
+<!-- 5 : YEAR 2023 -->
+<section class="slide" data-label="2023 · Події року">
+  <div class="year-head">
+    <div>
+      <div class="kicker"><span class="dot"></span>ХРОНОЛОГІЯ · ПОДІЇ РОКУ</div>
+      <div class="headline md" style="margin-top:8px;">2023</div>
+    </div>
+    <div class="year-num">01</div>
+  </div>
+  <div class="year-list">
+    <div class="row"><div class="date">23 черв</div><div class="org">ВЧ А4124</div><div class="desc">Автомобіль Ford Transit — <b>120 000 ₴</b></div><div class="tags"><span class="tag">Авто</span></div></div>
+    <div class="row"><div class="date">11 лип</div><div class="org">93 ОМБр · сапери</div><div class="desc">Прилади нічного бачення</div><div class="tags"><span class="tag">Оптика</span><span class="tag">Сапери</span></div></div>
+    <div class="row"><div class="date">19 лип</div><div class="org">227 ОАБ</div><div class="desc">Партія автомобільних шин</div><div class="tags"><span class="tag">Авто</span><span class="tag">Шини</span></div></div>
+    <div class="row"><div class="date">31 лип</div><div class="org">ССО</div><div class="desc">Бійці ССО подякували фонду за допомогу</div><div class="tags"><span class="tag">Звіт</span><span class="tag">Подяка</span></div></div>
+    <div class="row"><div class="date">8 сер</div><div class="org">93 ОМБр · сапери</div><div class="desc">Міношукачі Equinox 900</div><div class="tags"><span class="tag">Розмінування</span></div></div>
+    <div class="row"><div class="date">31 сер</div><div class="org">Юнацька збірна пляжного волейболу</div><div class="desc">Поїздка на Beach Pro Tour Futures 2023, Варшава</div><div class="tags"><span class="tag">Спорт</span><span class="tag">Соцпроєкт</span></div></div>
+    <div class="row"><div class="date">25 вер</div><div class="org">93 ОМБр «Холодний Яр»</div><div class="desc">Транспортний засіб: квадроцикл</div><div class="tags"><span class="tag">Авто</span></div></div>
+    <div class="row"><div class="date">12 жов</div><div class="org">ССО</div><div class="desc">Монокуляр нічного бачення</div><div class="tags"><span class="tag">Оптика</span></div></div>
+    <div class="row"><div class="date">15 лис</div><div class="org">3 ОБ УДА «Волинь»</div><div class="desc">Одяг і базові потреби для бійців</div><div class="tags"><span class="tag">Екіпірування</span></div></div>
+    <div class="row"><div class="date">29 лис</div><div class="org">1 БрОП НГУ «Буревій»</div><div class="desc">Відновлення автомобіля</div><div class="tags"><span class="tag">Ремонт</span></div></div>
+    <div class="row"><div class="date">12 гру</div><div class="org">Швидка на передову</div><div class="desc">Автомобіль швидкої допомоги з укомплектуванням</div><div class="tags"><span class="tag">Медицина</span><span class="tag">Евакуація</span></div></div>
+  </div>
+  <div class="footer">
+    <div class="brand">
+      <svg class="chevron" width="22" height="22" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#E1CC01"/></svg>
+      <span>БО · БФ «Сенсум»</span>
+    </div>
+    <span>05 / 13</span>
+  </div>
+</section>
+
+<!-- 6 : MARA SHOWCASE -->
+<section class="slide" data-label="Показова передача · БпАК Мара">
+  <div class="kicker"><span class="dot"></span>ПОКАЗОВА ПЕРЕДАЧА · ЗБІР І ЗВІТ</div>
+  <div class="headline md">БпАК «МАРА» · 45 ОАБр</div>
+  <div class="showcase">
+    <div>
+      <div class="body-copy">Великий збір і завершений звіт для 45 окремої артилерійської бригади: комплекси БпАК «Мара» українського виробництва для аеророзвідки, підтвердження від підрозділу й офіційна подяка.</div>
+      <div class="showcase-figs">
+        <div class="fig"><div class="fig-num">1 716 696,33 ₴</div><div class="fig-label">Зібрано та передано</div></div>
+        <div class="fig"><div class="fig-num">45 ОАБр</div><div class="fig-label">Отримувач</div></div>
+      </div>
+    </div>
+    <div class="showcase-media"><img class="bw" src="../report/assets/photos/bpak-mara-operator-snow.jpg" alt=""/></div>
+  </div>
+  <div class="footer">
+    <div class="brand">
+      <svg class="chevron" width="22" height="22" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#E1CC01"/></svg>
+      <span>БО · БФ «Сенсум»</span>
+    </div>
+    <span>06 / 13</span>
+  </div>
+</section>
+
+<!-- 7 : YEAR 2024 -->
+<section class="slide" data-label="2024 · Події року">
+  <div class="year-head">
+    <div>
+      <div class="kicker"><span class="dot"></span>ХРОНОЛОГІЯ · ПОДІЇ РОКУ</div>
+      <div class="headline md" style="margin-top:8px;">2024</div>
+    </div>
+    <div class="year-num">02</div>
+  </div>
+  <div class="year-list">
+    <div class="row"><div class="date">5 січ</div><div class="org">1 БрОП «Буревій»</div><div class="desc">18 зарядних станцій EcoFlow і завершення відновлення авто</div><div class="tags"><span class="tag">Енергія</span><span class="tag">Авто</span></div></div>
+    <div class="row"><div class="date">17 січ</div><div class="org">1 Президентська бр.</div><div class="desc">3 спектр-аналізатори «Цукорок» і 3 підсилювачі «Шатро» STR 50-IV</div><div class="tags"><span class="tag">РЕБ</span><span class="tag">Збір</span></div></div>
+    <div class="row"><div class="date">14 лют</div><div class="org">ДФТГ «Лівий берег» · 112 ОБр ТрО</div><div class="desc">Подяка-грамота директору Олексію Лазарєву</div><div class="tags"><span class="tag">Подяка</span></div></div>
+    <div class="row"><div class="date">4–12 квіт</div><div class="org">54 бригада · БпЛА</div><div class="desc">Засоби РЕБ, зв'язку та інше обладнання</div><div class="tags"><span class="tag">РЕБ</span><span class="tag">Зв'язок</span></div></div>
+    <div class="row"><div class="date">8 трав</div><div class="org">БФ «Гуркіт» · футбол 5×5</div><div class="desc">12 команд, спільний збір на прилади нічного бачення — <b>750 000 ₴</b></div><div class="tags"><span class="tag">Спорт</span></div></div>
+    <div class="row"><div class="date">6 сер</div><div class="org">93 ОМБр «Холодний Яр»</div><div class="desc">Автомобіль</div><div class="tags"><span class="tag">Авто</span></div></div>
+    <div class="row"><div class="date">19 сер</div><div class="org">Чемпіонат Києва · пляжний футбол</div><div class="desc">Команда БФ SENSUM посіла 1 місце у своїй лізі</div><div class="tags"><span class="tag">Спорт</span></div></div>
+    <div class="row"><div class="date">5 вер</div><div class="org">1 танкова бригада</div><div class="desc">Побутове устаткування для підрозділу</div><div class="tags"><span class="tag">Побут</span></div></div>
+    <div class="row"><div class="date">17 вер</div><div class="org">3 ОБ УДА «Волинь»</div><div class="desc">Тепловізор</div><div class="tags"><span class="tag">Оптика</span></div></div>
+    <div class="row"><div class="date">18 лис</div><div class="org">Бат. «Сила Свободи»</div><div class="desc">Наземний роботизований комплекс «Веприк» — з БФ «Завжди Надія»</div><div class="tags"><span class="tag">Партнерство</span></div></div>
+    <div class="row"><div class="date">21 лис</div><div class="org">93 ОМБр</div><div class="desc">Ремонт автомобіля</div><div class="tags"><span class="tag">Ремонт</span></div></div>
+  </div>
+  <div class="footer">
+    <div class="brand">
+      <svg class="chevron" width="22" height="22" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#E1CC01"/></svg>
+      <span>БО · БФ «Сенсум»</span>
+    </div>
+    <span>07 / 13</span>
+  </div>
+</section>
+
+<!-- 8 : PTAKHY MADYARA -->
+<section class="slide" data-label="Опорне партнерство · Птахи Мадяра">
+  <div class="kicker"><span class="dot"></span>ОПОРНЕ ПАРТНЕРСТВО</div>
+  <div class="headline md">«ПТАХИ МАДЯРА»</div>
+  <div class="showcase">
+    <div>
+      <div class="body-copy">Фінансова допомога на FPV та розвідувальні дрони для підрозділу Роберта Бровді. У відповідь фонд отримав офіційну подяку та прапор «Очі та жало» з підписами бійців.</div>
+      <div class="milestones">
+        <div class="milestone"><div class="d">25 сер 2023</div><div class="t">Закриття збору</div></div>
+        <div class="milestone"><div class="d">6 жов 2023</div><div class="t">FPV і розвіддрони</div></div>
+      </div>
+    </div>
+    <div class="showcase-media"><img class="bw" src="../report/assets/photos/ptakhy-madyara-flag.jpg" alt=""/></div>
+  </div>
+  <div class="footer">
+    <div class="brand">
+      <svg class="chevron" width="22" height="22" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#E1CC01"/></svg>
+      <span>БО · БФ «Сенсум»</span>
+    </div>
+    <span>08 / 13</span>
+  </div>
+</section>
+
+<!-- 9 : YEAR 2025 -->
+<section class="slide" data-label="2025 · Події року">
+  <div class="year-head">
+    <div>
+      <div class="kicker"><span class="dot"></span>ХРОНОЛОГІЯ · ПОДІЇ РОКУ</div>
+      <div class="headline md" style="margin-top:8px;">2025</div>
+    </div>
+    <div class="year-num">03</div>
+  </div>
+  <div class="year-list">
+    <div class="row"><div class="date">27 січ</div><div class="org">3 ОБ УДА «Волинь»</div><div class="desc">Портативний відеоперехоплювач, антена і плата target</div><div class="tags"><span class="tag">РЕБ</span><span class="tag">Зв'язок</span></div></div>
+    <div class="row"><div class="date">30 січ</div><div class="org">ВЧ А2943</div><div class="desc">БпЛА «Сойка»</div><div class="tags"><span class="tag">БПЛА</span></div></div>
+    <div class="row"><div class="date">5 лют</div><div class="org">ВЧ А2943</div><div class="desc">Засоби зв'язку, РЕБ і детекції дронів</div><div class="tags"><span class="tag">РЕБ</span><span class="tag">Зв'язок</span></div></div>
+    <div class="row"><div class="date">19 бер</div><div class="org">12 бригада НГУ</div><div class="desc">Автомобіль — у співпраці з іншими волонтерами</div><div class="tags"><span class="tag">Авто</span><span class="tag">Партнерство</span></div></div>
+    <div class="row"><div class="date">7 лип</div><div class="org">102 ОБр ТрО</div><div class="desc">2 дрони Mavic 3T Thermal — зі Світланою Вінтонюк</div><div class="tags"><span class="tag">Дрони</span><span class="tag">Партнерство</span></div></div>
+    <div class="row"><div class="date">21 сер</div><div class="org">Підрозділ рекрутингу</div><div class="desc">Транспорт для підрозділу рекрутингу та комплектації</div><div class="tags"><span class="tag">Авто</span></div></div>
+    <div class="row"><div class="date">27 сер</div><div class="org">Падел · Місто Спорту</div><div class="desc">Відкриття нової локації для паделу на Долобецькому острові</div><div class="tags"><span class="tag">Спорт</span></div></div>
+    <div class="row"><div class="date">1 жов</div><div class="org">ВЧ А2860</div><div class="desc">Автомобіль Citroën Jumper — передано в День захисників</div><div class="tags"><span class="tag">Авто</span></div></div>
+  </div>
+  <div class="footer">
+    <div class="brand">
+      <svg class="chevron" width="22" height="22" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#E1CC01"/></svg>
+      <span>БО · БФ «Сенсум»</span>
+    </div>
+    <span>09 / 13</span>
+  </div>
+</section>
+
+<!-- 10 : 45 OABR THANKS -->
+<section class="slide" data-label="Окрема вдячність · 45 ОАБр">
+  <div class="kicker"><span class="dot"></span>ОКРЕМА ВДЯЧНІСТЬ</div>
+  <div class="headline md">45 ОАБр</div>
+  <div class="showcase">
+    <div>
+      <div class="body-copy">Подяка від 45 окремої артилерійської бригади закріплює історію «Мари» як завершену передачу: збір, обладнання, звіт, визнання підрозділу.</div>
+    </div>
+    <div class="showcase-media"><img class="bw" src="../report/assets/photos/45-oabr-thanks.jpg" alt=""/></div>
+  </div>
+  <div class="footer">
+    <div class="brand">
+      <svg class="chevron" width="22" height="22" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#E1CC01"/></svg>
+      <span>БО · БФ «Сенсум»</span>
+    </div>
+    <span>10 / 13</span>
+  </div>
+</section>
+
+<!-- 11 : YEAR 2026 -->
+<section class="slide" data-label="2026 · Триває">
+  <div class="year-head">
+    <div>
+      <div class="kicker"><span class="dot"></span>ХРОНОЛОГІЯ · ТРИВАЄ</div>
+      <div class="headline md" style="margin-top:8px;">2026</div>
+    </div>
+    <div class="year-num">04</div>
+  </div>
+  <div class="year-list">
+    <div class="row"><div class="date">9 лют</div><div class="org">3 ОБ УДА «Волинь»</div><div class="desc">Тепловізор INFIRAY Saim SCL35 і станція EcoFlow River 2 MAX</div><div class="tags"><span class="tag">Оптика</span><span class="tag">Енергія</span></div></div>
+    <div class="row"><div class="date">22 лют</div><div class="org">ВЧ А2943</div><div class="desc">Виріб РЕБ «Намет-Д»</div><div class="tags"><span class="tag">РЕБ</span></div></div>
+    <div class="row"><div class="date">2 бер</div><div class="org">ВЧ А5049</div><div class="desc">Пристрій РЕБ «Чуйка 3.0» і виносна антена</div><div class="tags"><span class="tag">РЕБ</span></div></div>
+    <div class="row"><div class="date">2026</div><div class="org">Воротарська школа В. Сидоренка</div><div class="desc">Фінансова та організаційна допомога дитячій школі</div><div class="tags"><span class="tag">Спорт</span><span class="tag">Діти</span></div></div>
+    <div class="row"><div class="date">4 бер</div><div class="org">Адресна допомога військовослужбовцю</div><div class="desc">Цільова допомога на придбання житла — <b>432 982 ₴</b></div><div class="tags"><span class="tag">Адресна допомога</span></div></div>
+    <div class="row"><div class="date">4 квіт</div><div class="org">ВЧ А2943</div><div class="desc">Запасні частини та витратні матеріали для автомобілів</div><div class="tags"><span class="tag">Авто</span></div></div>
+    <div class="row"><div class="date">4 трав</div><div class="org">ВЧ А3892</div><div class="desc">Засоби управління та комплектуючі для збору БпЛА</div><div class="tags"><span class="tag">Дрони</span></div></div>
+    <div class="row"><div class="date">трав</div><div class="org">109 ОГШБ · 10 ОГШБр «Едельвейс»</div><div class="desc">Пульти, FPV-окуляри, зарядні, контролери, підвіси, 3D-пластик</div><div class="tags"><span class="tag">FPV</span></div></div>
+  </div>
+  <div class="footer">
+    <div class="brand">
+      <svg class="chevron" width="22" height="22" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#E1CC01"/></svg>
+      <span>БО · БФ «Сенсум»</span>
+    </div>
+    <span>11 / 13</span>
+  </div>
+</section>
+
+<!-- 12 : FOUNDERS -->
+<section class="slide" data-label="Засновники фонду">
+  <div class="kicker"><span class="dot"></span>03 — ЗАСНОВНИКИ ФОНДУ</div>
+  <div class="headline md">ДЕВ'ЯТЬ ЛЮДЕЙ, ЯКІ ЗІБРАЛИ<br/>ДОПОМОГУ В СИСТЕМУ</div>
+  <div class="founders-grid">
+    <div class="founder"><img class="founder-photo bw" src="https://st.getinfootball.com/player/5100440/photo/6669a75c0768c_640x640.jpg" alt=""/><div class="founder-name">Віталій Жадобін</div><div class="founder-role">Директор фонду</div></div>
+    <div class="founder"><img class="founder-photo bw" src="../report/assets/photos/lazar.jpg" alt=""/><div class="founder-name">Олексій Лазарєв</div><div class="founder-role">Співзасновник</div></div>
+    <div class="founder"><img class="founder-photo bw" src="https://st.getinfootball.com/player/5100312/photo/64ae5a315e6fb_640x640.jpg" alt=""/><div class="founder-name">Юрій Ревізюк</div><div class="founder-role">Співзасновник</div></div>
+    <div class="founder"><img class="founder-photo bw" src="https://st.getinfootball.com/player/5100439/photo/64ae58e1d2b32_640x640.jpg" alt=""/><div class="founder-name">Артем Сергієнко</div><div class="founder-role">Співзасновник</div></div>
+    <div class="founder"><img class="founder-photo bw" src="https://st.getinfootball.com/player/5100438/photo/64ae5932c446f_640x640.jpg" alt=""/><div class="founder-name">Віталій Місюра</div><div class="founder-role">Співзасновник</div></div>
+    <div class="founder"><img class="founder-photo bw" src="https://st.getinfootball.com/player/5100450/photo/6669a89abb4f5_640x640.jpg" alt=""/><div class="founder-name">Павло Пльотка</div><div class="founder-role">Співзасновник</div></div>
+    <div class="founder"><img class="founder-photo bw" src="https://st.getinfootball.com/player/5100431/photo/64ae59db368fd_640x640.jpg" alt=""/><div class="founder-name">Олександр Сіленко</div><div class="founder-role">Співзасновник</div></div>
+    <div class="founder"><img class="founder-photo bw" src="https://st.getinfootball.com/player/5100445/photo/64ae5a0de9344_640x640.jpg" alt=""/><div class="founder-name">Павло Кот</div><div class="founder-role">Співзасновник</div></div>
+    <div class="founder"><img class="founder-photo bw" src="../report/assets/photos/seredych.jpg" alt=""/><div class="founder-name">Микола Середич</div><div class="founder-role">Співзасновник</div></div>
+    <div class="founder" style="display:flex; flex-direction:column; justify-content:center;">
+      <div class="fig-num" style="font-size:64px;">09</div><div class="fig-label">Співзасновників</div>
+      <div class="fig-num" style="font-size:64px; margin-top:20px;">2023</div><div class="fig-label">Рік заснування</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="brand">
+      <svg class="chevron" width="22" height="22" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#E1CC01"/></svg>
+      <span>БО · БФ «Сенсум»</span>
+    </div>
+    <span>12 / 13</span>
+  </div>
+</section>
+
+<!-- 13 : CTA -->
+<section class="slide slide-cta" data-label="Підтримати фонд">
+  <div class="kicker" style="color:var(--ink-3);"><span class="dot" style="background:var(--ink);"></span>04 — ПІДТРИМАТИ ФОНД</div>
+  <div class="headline md">РЕКВІЗИТИ ДЛЯ ДОПОМОГИ<br/>ТА ПОСТІЙНИЙ ЗБІР</div>
+  <div class="cta-wrap">
+    <div class="req-list">
+      <div class="req-row"><div class="k">Отримувач</div><div class="v">БО «БФ «Сенсум»»</div></div>
+      <div class="req-row"><div class="k">IBAN</div><div class="v">UA643220010000026007700002306</div></div>
+      <div class="req-row"><div class="k">ЄДРПОУ</div><div class="v">44946674</div></div>
+      <div class="req-row"><div class="k">Банк</div><div class="v">АТ «Універсал Банк»</div></div>
+      <div class="req-row"><div class="k">МФО</div><div class="v">322001</div></div>
+      <div class="req-row"><div class="k">ЄДРПОУ банку</div><div class="v">21133352</div></div>
+      <div class="social-row">
+        <span class="s">Facebook →</span>
+        <span class="s">Instagram →</span>
+        <span class="s">Monobank →</span>
+      </div>
+    </div>
+    <div class="cta-side">
+      <svg width="220" height="220" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361" opacity="0.85"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#0A0A0A"/></svg>
+      <div class="body-copy" style="margin-top:32px; max-width:420px;">«Допомагати збройним силам — наша невід'ємна потреба та спільна мета.»</div>
+      <div class="founder-role" style="margin-top:16px;">Віталій Жадобін, Співзасновник БО «БФ «Сенсум»»</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="brand">
+      <svg class="chevron" width="22" height="22" viewBox="0 0 240 240"><path d="M125 40 L205 120 L125 200 L100 200 L180 120 L100 40 Z" fill="#999361"/><path d="M65 40 L145 120 L65 200 L40 200 L120 120 L40 40 Z" fill="#0A0A0A"/></svg>
+      <span>БО · БФ «Сенсум»</span>
+    </div>
+    <span>13 / 13</span>
+  </div>
+</section>
+
+</deck-stage>
+</body>
+</html>
