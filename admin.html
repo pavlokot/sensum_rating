@@ -57,6 +57,14 @@
     .split-btn { width:100%; padding:14px; background:var(--card); border:1px solid var(--yellow); color:var(--yellow); font-size:12px; letter-spacing:3px; text-transform:uppercase; cursor:pointer; margin-bottom:2px; font-weight:700; }
     .split-btn:hover { background:var(--yellow); color:#000; }
 
+    .goalie-toggle-row { display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--card); border:1px solid var(--border); padding:14px 16px; margin-bottom:12px; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text); cursor:pointer; }
+    .switch { position:relative; display:inline-block; width:44px; height:24px; flex:none; }
+    .switch input { opacity:0; width:0; height:0; }
+    .switch-slider { position:absolute; inset:0; background:var(--border); border-radius:24px; transition:background .15s ease; }
+    .switch-slider::before { content:''; position:absolute; width:18px; height:18px; left:3px; top:3px; background:var(--muted); border-radius:50%; transition:transform .15s ease, background .15s ease; }
+    .switch input:checked + .switch-slider { background:var(--yellow); }
+    .switch input:checked + .switch-slider::before { transform:translateX(20px); background:#000; }
+
     .result-msg { margin-top:12px; font-size:12px; letter-spacing:2px; text-align:center; padding:12px; display:none; }
     .result-msg.ok { background:#0D1A0D; color:var(--green); border:1px solid var(--green); }
     .result-msg.err { background:#1A0D0D; color:var(--red); border:1px solid var(--red); }
@@ -133,6 +141,13 @@
         <div id="guestList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
         <button onclick="addGuest()" style="background:none;border:1px dashed var(--border);color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:10px;width:100%;cursor:pointer;">+ Додати гостя</button>
       </div>
+      <label class="goalie-toggle-row">
+        <span>Враховувати рейтинг воротаря</span>
+        <span class="switch">
+          <input type="checkbox" id="countGoalieRating" onchange="onGoalieRatingToggle()">
+          <span class="switch-slider"></span>
+        </span>
+      </label>
       <button class="split-btn" onclick="splitTeams(2)">Розділити на 2 команди</button>
       <button class="split-btn" onclick="splitTeams(3)">Розділити на 3 команди</button>
       <div id="teamsOutput"></div>
@@ -319,6 +334,22 @@ function getGuests() {
 
 let lastSplit = null; // remember last split params for reshuffle
 
+let countGoalieRating = false; // за замовчуванням рейтинг воротаря НЕ враховується
+
+(function initGoalieToggle() {
+  try {
+    countGoalieRating = localStorage.getItem('sensum_count_goalie_rating') === '1';
+  } catch (e) {}
+  const cb = document.getElementById('countGoalieRating');
+  if (cb) cb.checked = countGoalieRating;
+})();
+
+function onGoalieRatingToggle() {
+  countGoalieRating = document.getElementById('countGoalieRating').checked;
+  try { localStorage.setItem('sensum_count_goalie_rating', countGoalieRating ? '1' : '0'); } catch (e) {}
+  if (lastSplit) doSplit(false); // одразу перерахувати поточний розподіл з новою логікою
+}
+
 function getGoalies() {
   const goalies = [];
   PLAYERS.forEach((p, i) => {
@@ -377,13 +408,31 @@ function doSplit(shuffle) {
 
   const teams = Array.from({length: n}, () => ({players:[], total:0}));
 
-  // Assign goalies — each to separate team. Their rating does NOT count in balance.
-  // For reshuffle — randomize which team gets which goalie
-  const goalieOrder = shuffle ? [...goaliePlayers].sort(() => Math.random() - 0.5) : goaliePlayers;
-  goalieOrder.forEach((p, idx) => {
-    teams[idx % teams.length].players.push({ ...p, isGoalie: true });
-    // NOTE: deliberately not adding p.rating to teams[idx].total
-  });
+  if (countGoalieRating) {
+    // Рейтинг воротаря враховується: розподіляємо воротарів так само
+    // збалансовано, як і решту гравців (найсильніший — у команду з
+    // найменшою поточною сумою), і додаємо його рейтинг у total.
+    let goalieList = [...goaliePlayers];
+    if (shuffle) {
+      goalieList = goalieList.map(p => ({ ...p, _j: Math.random() }));
+      goalieList.sort((a,b) => (b.rating - a.rating) || (a._j - b._j));
+    } else {
+      goalieList.sort((a,b) => b.rating - a.rating);
+    }
+    goalieList.forEach(p => {
+      const minIdx = teams.reduce((min, t, i) => t.total < teams[min].total ? i : min, 0);
+      teams[minIdx].players.push({ ...p, isGoalie: true });
+      teams[minIdx].total = Math.round((teams[minIdx].total + p.rating) * 100) / 100;
+    });
+  } else {
+    // Рейтинг воротаря НЕ враховується: по одному воротарю на команду,
+    // порядок — довільний/перемішаний, у total рейтинг не додається.
+    const goalieOrder = shuffle ? [...goaliePlayers].sort(() => Math.random() - 0.5) : goaliePlayers;
+    goalieOrder.forEach((p, idx) => {
+      teams[idx % teams.length].players.push({ ...p, isGoalie: true });
+      // NOTE: deliberately not adding p.rating to teams[idx].total
+    });
+  }
 
   // Distribute the rest balanced
   rest.forEach(p => {
