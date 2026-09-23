@@ -148,6 +148,13 @@
           <span class="switch-slider"></span>
         </span>
       </label>
+      <label class="goalie-toggle-row">
+        <span>Новий алгоритм балансу (тест)</span>
+        <span class="switch">
+          <input type="checkbox" id="useOptimizedBalance" onchange="onOptimizedBalanceToggle()">
+          <span class="switch-slider"></span>
+        </span>
+      </label>
       <button class="split-btn" onclick="splitTeams(2)">Розділити на 2 команди</button>
       <button class="split-btn" onclick="splitTeams(3)">Розділити на 3 команди</button>
       <div id="teamsOutput"></div>
@@ -350,6 +357,112 @@ function onGoalieRatingToggle() {
   if (lastSplit) doSplit(false); // одразу перерахувати поточний розподіл з новою логікою
 }
 
+let useOptimizedBalance = false; // за замовчуванням — поточний (старий) алгоритм балансу
+
+(function initOptimizedBalanceToggle() {
+  try {
+    useOptimizedBalance = localStorage.getItem('sensum_use_optimized_balance') === '1';
+  } catch (e) {}
+  const cb = document.getElementById('useOptimizedBalance');
+  if (cb) cb.checked = useOptimizedBalance;
+})();
+
+function onOptimizedBalanceToggle() {
+  useOptimizedBalance = document.getElementById('useOptimizedBalance').checked;
+  try { localStorage.setItem('sensum_use_optimized_balance', useOptimizedBalance ? '1' : '0'); } catch (e) {}
+  if (lastSplit) doSplit(false);
+}
+
+// Скільки гравців (без воротаря, якщо його рейтинг не враховується) фактично
+// йде в розрахунок середнього для команди — узгоджено з тим, як saveTotal
+// накопичується в doSplit() для кожного з двох режимів countGoalieRating.
+function teamBalanceAvg(team) {
+  const denom = countGoalieRating
+    ? team.players.length
+    : team.players.filter(p => !p.isGoalie).length;
+  return denom ? team.total / denom : -Infinity;
+}
+
+function teamsSpread(teams) {
+  const avgs = teams.map(teamBalanceAvg);
+  return Math.max(...avgs) - Math.min(...avgs);
+}
+
+// Розподіл "решти" гравців із заздалегідь зафіксованими цільовими розмірами
+// команд (максимально рівні, різниця не більше 1), плюс локальне
+// покращення обмінами гравців між командами, поки це зменшує розкид
+// середніх рейтингів.
+function distributeRestOptimized(teams, rest) {
+  const n = teams.length;
+  const totalHeadcount = teams.reduce((s, t) => s + t.players.length, 0) + rest.length;
+  const base = Math.floor(totalHeadcount / n);
+  const remCount = totalHeadcount % n;
+
+  // Зайві "+1" місця віддаємо командам, які наразі мають найменше гравців
+  // (наприклад, без воротаря), щоб фінальні розміри команд вирівнялись.
+  const order = teams.map((_, i) => i).sort((a, b) => teams[a].players.length - teams[b].players.length);
+  const targetTotal = new Array(n).fill(base);
+  for (let k = 0; k < remCount; k++) targetTotal[order[k]] += 1;
+
+  const restQuota = teams.map((t, i) => Math.max(0, targetTotal[i] - t.players.length));
+  const restFilled = new Array(n).fill(0);
+  const sorted = [...rest].sort((a, b) => b.rating - a.rating);
+
+  sorted.forEach(p => {
+    let bestIdx = -1;
+    teams.forEach((t, i) => {
+      if (restFilled[i] >= restQuota[i]) return;
+      if (bestIdx === -1 || teamBalanceAvg(t) < teamBalanceAvg(teams[bestIdx])) bestIdx = i;
+    });
+    if (bestIdx === -1) {
+      // Підстраховка на випадок неточного округлення квот
+      bestIdx = teams.reduce((m, t, i) => teamBalanceAvg(t) < teamBalanceAvg(teams[m]) ? i : m, 0);
+    }
+    teams[bestIdx].players.push(p);
+    teams[bestIdx].total = Math.round((teams[bestIdx].total + p.rating) * 100) / 100;
+    restFilled[bestIdx]++;
+  });
+
+  swapOptimizeTeams(teams);
+}
+
+function swapOptimizeTeams(teams) {
+  let improved = true;
+  let guard = 0;
+  while (improved && guard < 500) {
+    improved = false;
+    guard++;
+    for (let a = 0; a < teams.length; a++) {
+      for (let b = a + 1; b < teams.length; b++) {
+        const teamA = teams[a], teamB = teams[b];
+        const restA = teamA.players.filter(p => !p.isGoalie);
+        const restB = teamB.players.filter(p => !p.isGoalie);
+        let bestSwap = null;
+        let bestSpread = teamsSpread(teams);
+        for (const x of restA) {
+          for (const y of restB) {
+            if (x.rating === y.rating) continue;
+            teamA.total = Math.round((teamA.total - x.rating + y.rating) * 100) / 100;
+            teamB.total = Math.round((teamB.total - y.rating + x.rating) * 100) / 100;
+            const s = teamsSpread(teams);
+            teamA.total = Math.round((teamA.total + x.rating - y.rating) * 100) / 100;
+            teamB.total = Math.round((teamB.total - x.rating + y.rating) * 100) / 100;
+            if (s < bestSpread - 1e-9) { bestSpread = s; bestSwap = { x, y }; }
+          }
+        }
+        if (bestSwap) {
+          const { x, y } = bestSwap;
+          teamA.players = teamA.players.map(p => p === x ? y : p);
+          teamB.players = teamB.players.map(p => p === y ? x : p);
+          teamA.total = Math.round((teamA.total - x.rating + y.rating) * 100) / 100;
+          teamB.total = Math.round((teamB.total - y.rating + x.rating) * 100) / 100;
+          improved = true;
+        }
+      }
+    }
+  }
+}
+
 function getGoalies() {
   const goalies = [];
   PLAYERS.forEach((p, i) => {
@@ -435,11 +548,15 @@ function doSplit(shuffle) {
   }
 
   // Distribute the rest balanced
-  rest.forEach(p => {
-    const minIdx = teams.reduce((min, t, i) => t.total < teams[min].total ? i : min, 0);
-    teams[minIdx].players.push(p);
-    teams[minIdx].total = Math.round((teams[minIdx].total + p.rating) * 100) / 100;
-  });
+  if (useOptimizedBalance) {
+    distributeRestOptimized(teams, rest);
+  } else {
+    rest.forEach(p => {
+      const minIdx = teams.reduce((min, t, i) => t.total < teams[min].total ? i : min, 0);
+      teams[minIdx].players.push(p);
+      teams[minIdx].total = Math.round((teams[minIdx].total + p.rating) * 100) / 100;
+    });
+  }
 
   teams.forEach(t => t.players.sort((a,b) => {
     if (a.isGoalie && !b.isGoalie) return -1;
@@ -447,7 +564,14 @@ function doSplit(shuffle) {
     return b.rating - a.rating;
   }));
 
+  const algoLabel = useOptimizedBalance
+    ? 'Алгоритм: НОВИЙ (рівні розміри + обмін)'
+    : 'Алгоритм: старий (сума, жадібно)';
+  const spreadLabel = 'Розкид середніх: ' + teamsSpread(teams).toFixed(2);
+
   document.getElementById('teamsOutput').innerHTML =
+    '<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);margin-bottom:10px;display:flex;justify-content:space-between;">' +
+    '<span>' + algoLabel + '</span><span>' + spreadLabel + '</span></div>' +
     '<div class="teams-output">' +
     teams.map((t, i) => `
       <div class="team-card">
@@ -457,7 +581,7 @@ function doSplit(shuffle) {
             <span>${p.isGoalie ? '🧤 ' : ''}${p.name}</span>
             <span class="team-score">${p.rating.toFixed(1)}</span>
           </div>`).join('')}
-        <div class="team-total">Сума: ${t.total.toFixed(2)}</div>
+        <div class="team-total">Сума: ${t.total.toFixed(2)} · Серед.: ${teamBalanceAvg(t).toFixed(2)}</div>
       </div>`).join('') +
     '</div>' +
     '<button class="split-btn" style="margin-top:12px" onclick="reshuffle()">🔀 Перемішати</button>';
